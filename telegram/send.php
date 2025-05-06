@@ -1,0 +1,32 @@
+<?php
+function sendTelegramMessage($chat_id, $text)
+{
+    $bot_token = '6046108813:AAG-wbm2d3YMAEr8YHVmtUPqHCYi8kBmCUk';
+    $url = "https://api.telegram.org/bot$bot_token/sendMessage";
+
+    $data = [
+        'chat_id' => $chat_id,
+        'text' => $text
+    ];
+
+    $options = [
+        'http' => [
+            'method'  => 'POST',
+            'header'  => "Content-Type:application/x-www-form-urlencoded\r\n",
+            'content' => http_build_query($data)
+        ]
+    ];
+
+    $context = stream_context_create($options);
+    file_get_contents($url, false, $context);
+}
+
+if (isset($_POST['chat_id']) && isset($_POST['text'])) {
+    $chat_id = $_POST['chat_id'];
+    $text = $_POST['text'];
+
+    sendTelegramMessage($chat_id, $text);
+    echo "Message sent to chat ID: $chat_id";
+} else {
+    // echo "Chat ID or message not provided.";
+}
