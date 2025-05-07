@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (in_array($img_ext, $allowed)) {
                 $new_name = uniqid('profile_', true) . '.' . $img_ext;
-                $upload_dir = 'uploads/';
+                $upload_dir = __DIR__ . '/../uploads/profiles/';
                 if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
                 $image_url = $upload_dir . $new_name;
                 move_uploaded_file($img_tmp, $image_url);
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $active = 1;
                 $force_reset = 0;
+                $image_url = "uploads/profiles/" . $new_name;
 
                 $insert_stmt = $mysqli->prepare("INSERT INTO users (username, password, active, role_id, image_url, force_reset) VALUES (?, ?, ?, ?, ?, ?)");
                 $insert_stmt->bind_param("ssiisi", $username, $hashed, $active, $role_id, $image_url, $force_reset);
@@ -129,18 +130,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="first_name" class="form-label">First Name</label>
-                    <input type="text" class="form-control" id="first_name" name="first_name">
+                    <input type="text" class="form-control" id="first_name" name="first_name" required>
                 </div>
                 <div class="col-md-6">
                     <label for="last_name" class="form-label">Last Name</label>
-                    <input type="text" class="form-control" id="last_name" name="last_name">
+                    <input type="text" class="form-control" id="last_name" name="last_name" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label for="gender" class="form-label">Gender</label>
-                    <select class="form-select" id="gender" name="gender">
+                    <select class="form-select" id="gender" name="gender" required>
                         <option value="">Select</option>
                         <option value="male">Male</option>
                         <option value="female">Female</option>
@@ -148,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 <div class="col-md-6">
                     <label for="dob" class="form-label">Date of Birth</label>
-                    <input type="date" class="form-control" id="dob" name="dob">
+                    <input type="date" class="form-control" id="dob" name="dob" required>
                 </div>
             </div>
 
@@ -187,7 +188,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <?php if (!empty($error)): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>
-
+            
             <button type="submit" class="btn btn-danger w-100">Register</button>
 
             <hr>
@@ -211,7 +212,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             formData.append("chat_id", chatId);
             formData.append("text", "Hello, this is a test message from Blood Donation Website!");
 
-            fetch("telegram/send.php", {
+            fetch("../telegram/send.php", {
                     method: "POST",
                     body: formData
                 })

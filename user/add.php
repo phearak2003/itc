@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             if (in_array($img_ext, $allowed)) {
                 $new_name = uniqid('profile_', true) . '.' . $img_ext;
-                $upload_dir = 'uploads/';
+                $upload_dir = __DIR__ . '/../uploads/profiles/';
                 if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
                 $image_url = $upload_dir . $new_name;
                 move_uploaded_file($img_tmp, $image_url);
@@ -60,6 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $active = 0;
                 $force_reset = 1;
+                $image_url = "uploads/profiles/" . $new_name;
 
                 $insert_stmt = $mysqli->prepare("INSERT INTO users (username, password, active, role_id, image_url, force_reset) VALUES (?, ?, ?, ?, ?, ?)");
                 $insert_stmt->bind_param("ssiisi", $username, $hashed, $active, $role_id, $image_url, $force_reset);
@@ -100,7 +101,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
 ?>
 
 <div class="container">
-    <form method="POST" enctype="multipart/form-data" class="p-4 border rounded bg-white shadow-sm my-5" style="margin: auto; max-width: 800px;">
+    <form method="POST" enctype="multipart/form-data" class="p-4 border rounded bg-white shadow-sm" style="margin: auto; max-width: 600px;">
         <h3 class="mb-4 text-center text-danger">Register New User</h3>
 
         <div class="row mb-3">
@@ -124,11 +125,11 @@ $roles = $mysqli->query("SELECT * FROM roles");
         <div class="row mb-3">
             <div class="col-md-6">
                 <label for="first_name" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="first_name" name="first_name">
+                <input type="text" class="form-control" id="first_name" name="first_name" required>
             </div>
             <div class="col-md-6">
                 <label for="last_name" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="last_name" name="last_name">
+                <input type="text" class="form-control" id="last_name" name="last_name" required>
             </div>
         </div>
 
@@ -143,7 +144,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
             </div>
             <div class="col-md-6">
                 <label for="dob" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="dob" name="dob">
+                <input type="date" class="form-control" id="dob" name="dob" required>
             </div>
         </div>
 

@@ -63,6 +63,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
         }
 
         .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             height: 60px;
             background-color: #ffffff;
             color: #212529;
@@ -128,14 +131,12 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 
     <div class="main-content">
         <div class="top-bar">
-            <div class="d-flex justify-content-between">
-                <h4>Dashboard</h4>
-                <div>
-                    <a href="dashboard.php?page=user_profile" class="btn btn-primary">
-                        <i class="bi bi-person"></i>
-                    </a>
-                    <a href="auth/logout.php" class="btn btn-danger">Logout</a>
-                </div>
+            <h4>Dashboard</h4>
+            <div>
+                <a href="dashboard.php?page=user_profile" class="btn btn-primary">
+                    <i class="bi bi-person"></i>
+                </a>
+                <a href="auth/logout.php" class="btn btn-danger">Logout</a>
             </div>
         </div>
 
@@ -170,6 +171,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                         break;
                     case 'user_profile':
                         include 'user/profile.php';
+                        break;
+                    case 'user_profile_edit':
+                        include 'user/edit_profile.php';
                         break;
                     default:
                         include('dashboard_page.php');

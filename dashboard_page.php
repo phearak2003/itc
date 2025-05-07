@@ -4,6 +4,11 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+if($_SESSION['role'] !== 'admin' && $_SESSION['role'] !== 'staff') {
+    header("Location: dashboard.php");
+    exit;
+}
+
 $roleCounts = [];
 $roleQuery = $mysqli->query("SELECT r.name AS role_name, COUNT(u.id) AS total FROM users u JOIN roles r ON u.role_id = r.id GROUP BY r.name");
 while ($row = $roleQuery->fetch_assoc()) {
@@ -35,8 +40,6 @@ $assessmentCount = $assessmentQuery->fetch_assoc()['total'];
         </div>
     </div>
 </div>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>

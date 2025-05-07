@@ -50,31 +50,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head>
-    <meta charset="UTF-8">
-    <title>Blood Donation Assessment</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-
-<body>
-
-    <div class="container py-5">
-        <div class="d-flex justify-content-between mb-4">
-            <h2>Blood Donation Assessment</h2>
-            <a href="dashboard.php" class="btn btn-secondary">Back to Dashboard</a>
+<div class="container">
+    <?php if ($canDonate !== null): ?>
+        <div class="alert <?= $canDonate ? 'alert-success' : 'alert-danger' ?>">
+            <?= $statusMessage ?>
         </div>
+    <?php endif; ?>
 
-        <?php if ($canDonate !== null): ?>
-            <div class="alert <?= $canDonate ? 'alert-success' : 'alert-danger' ?>">
-                <?= $statusMessage ?>
-            </div>
-        <?php endif; ?>
-
-        <form method="post" class="card p-4 shadow-sm">
-            <div class="mb-3">
+    <form method="post" class="card p-4 shadow-sm" style="max-width: 800px; margin: auto;">
+        <h2 class="mb-4">Assessment</h2>
+        <div class="row mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Are you between 18 and 60 years old?</label>
                 <select name="age" class="form-select" required>
                     <option value="">Select...</option>
@@ -83,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Do you weigh more than 45kg?</label>
                 <select name="weight" class="form-select" required>
                     <option value="">Select...</option>
@@ -91,8 +77,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <option value="no">No</option>
                 </select>
             </div>
+        </div>
 
-            <div class="mb-3">
+        <div class="row mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Are you currently free from any illness?</label>
                 <select name="illness" class="form-select" required>
                     <option value="">Select...</option>
@@ -101,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Are you currently not pregnant (if female)?</label>
                 <select name="pregnancy" class="form-select" required>
                     <option value="">Select...</option>
@@ -109,8 +97,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <option value="no">No</option>
                 </select>
             </div>
+        </div>
 
-            <div class="mb-3">
+        <div class="row mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Are you not taking any restricted medication?</label>
                 <select name="medication" class="form-select" required>
                     <option value="">Select...</option>
@@ -119,18 +109,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </select>
             </div>
 
-            <div class="mb-3">
+            <div class="col-md-6">
                 <label class="form-label">Appointment Date</label>
                 <input type="date" name="appointment_date" class="form-control" required>
             </div>
+        </div>
 
-            <div class="d-grid">
-                <button type="submit" class="btn btn-danger btn-lg">Submit Assessment</button>
+        <hr>
+
+        <div class="row">
+            <div class="col-md-6">
+                <a class="btn btn-primary w-100" href="dashboard.php">Back</a>
             </div>
-        </form>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-
-</html>
+            <div class="col-md-6">
+                <button type="submit" class="btn btn-danger w-100">Submit Assessment</button>
+            </div>
+        </div>
+    </form>
+</div>

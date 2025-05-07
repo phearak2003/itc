@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $delete_otp->close();
 
             unset($_SESSION['reset_user']);
+            unset($_SESSION['reset_username']);
 
             header("Location: success_reset.php");
             exit;
@@ -73,12 +74,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <input type="text" name="otp[]" maxlength="1" pattern="\d" class="form-control text-center me-1 otp-input" style="width: 50px;" required>
                 <?php endfor; ?>
             </div>
+            <div class="text-end">
+                <button type="button" id="resendBtn" class="btn btn-primary w-25">Resend OTP</button>
+            </div>
 
             <hr>
 
             <div class="mb-3">
                 <label for="new_password" class="form-label">New Password *</label>
-                <input type="password" name="new_password" id="new_password" class="form-control" required>
+                <div class="input-group">
+                    <input type="password" name="new_password" id="new_password" class="form-control" required>
+                    <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                        <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                    </button>
+                </div>
                 <small id="passwordStrength" class="text-muted"></small>
                 <ul id="passwordRules" class="small mt-1">
                     <li id="length" class="text-danger">At least 8 characters</li>
@@ -99,19 +108,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <div class="alert alert-danger"><?= $error ?></div>
             <?php endif; ?>
 
-            <button type="submit" id="submitBtn" class="btn btn-primary w-100" disabled>Reset Password</button>
-            
+            <button type="submit" id="submitBtn" class="btn btn-danger w-100" disabled>Reset Password</button>
+
             <hr>
 
             <p class="text-center"><small>Back to <a href="login.php">Login</a></small></p>
         </form>
 
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
         <script>
+            const resendBtn = document.getElementById('resendBtn');
+            resendBtn.addEventListener('click', function() {
+                this.disabled = true;
+                const username = <?= json_encode($_SESSION['reset_username'] ?? '') ?>;
+
+                const formData = new FormData();
+                formData.append("username", username);
+
+                fetch("reset_request.php", {
+                        method: "POST",
+                        body: formData
+                    })
+                    .then(res => res.text())
+                    .then(msg => alert("✅ Resend OTP successfully!"))
+                    .catch(err => {
+                        console.error(err);
+                        alert("❌ Error sending message.");
+                    }).finally(() => {
+                        this.disabled = false;
+                    });
+            });
+
+            const togglePassword = document.getElementById('togglePassword');
             const password = document.getElementById('new_password');
             const retype = document.getElementById('retype_password');
+            const eyeIcon = document.getElementById('eyeIcon');
+
+            togglePassword.addEventListener('click', function() {
+                const type = password.type === 'password' ? 'text' : 'password';
+                password.type = type;
+                retype.type = type;
+
+
+                if (type === 'password') {
+                    eyeIcon.classList.remove('bi-eye');
+                    eyeIcon.classList.add('bi-eye-slash');
+                } else {
+                    eyeIcon.classList.remove('bi-eye-slash');
+                    eyeIcon.classList.add('bi-eye');
+                }
+            });
+
             const matchStatus = document.getElementById('matchStatus');
             const submitBtn = document.getElementById('submitBtn');
 

@@ -1,5 +1,5 @@
 <?php
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id'])) {
     header("Location: dashboard.php");
     exit;
 }
@@ -133,7 +133,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
 
 <div class="container">
     <form method="POST" enctype="multipart/form-data" class="p-4 border rounded bg-white shadow-sm my-5" style="margin: auto; max-width: 600px;">
-        <h3 class="mb-4 text-center text-danger">Edit User Information</h3>
+        <h3 class="mb-4 text-center text-danger">Edit Profile</h3>
 
         <div class="row mb-3">
             <div class="col-12 text-center">
@@ -217,7 +217,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
 
         <div class="row mt-4">
             <div class="col d-flex justify-content-between">
-                <a class="btn btn-primary w-50 me-2" href="dashboard.php?page=user_management">Back</a>
+                <a class="btn btn-primary w-50 me-2" href="dashboard.php?page=user_profile">Back</a>
                 <button type="submit" class="btn btn-danger w-50">Save Changes</button>
             </div>
         </div>

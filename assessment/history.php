@@ -6,7 +6,6 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
-// Get username of logged-in user
 $user_id = $_SESSION['user_id'];
 $stmt = $mysqli->prepare("SELECT username FROM users WHERE id = ?");
 $stmt->bind_param("i", $user_id);
@@ -15,7 +14,6 @@ $stmt->bind_result($username);
 $stmt->fetch();
 $stmt->close();
 
-// Fetch assessments for this username
 $assessments = [];
 $stmt = $mysqli->prepare("SELECT * FROM assessments WHERE username = ? ORDER BY create_date DESC");
 $stmt->bind_param("s", $username);
@@ -28,7 +26,7 @@ while ($row = $result->fetch_assoc()) {
 $stmt->close();
 ?>
 
-<body class="container mt-4">
+<div class="container mt-4">
     <h2 class="mb-4">Assessment History</h2>
 
     <?php if (count($assessments) === 0): ?>
@@ -65,4 +63,4 @@ $stmt->close();
             </tbody>
         </table>
     <?php endif ?>
-</body>
+</div>

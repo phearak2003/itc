@@ -18,7 +18,6 @@ if ($_SESSION['user_id'] === $user_id) {
     exit;
 }
 
-// First, fetch the image URL of the user before deleting the record
 $getImage = $mysqli->prepare("SELECT image_url FROM users WHERE id = ?");
 $getImage->bind_param("i", $user_id);
 $getImage->execute();
@@ -26,12 +25,10 @@ $getImage->bind_result($image_url);
 $getImage->fetch();
 $getImage->close();
 
-// If an image exists and it's not the default image, delete it from the server
 if ($image_url && $image_url !== 'uploads/assets/default-user.png' && file_exists($image_url)) {
-    unlink($image_url); // Deletes the image file from the server
+    unlink($image_url);
 }
 
-// Proceed with deleting the associated data
 $deleteContacts = $mysqli->prepare("DELETE FROM user_contacts WHERE user_id = ?");
 $deleteContacts->bind_param("i", $user_id);
 $deleteContacts->execute();

@@ -37,8 +37,8 @@ $stmt->close();
 
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<div class="container mt-5">
-    <div class="p-4 border rounded bg-white shadow-sm my-5" style="margin: auto; max-width: 500px;">
+<div class="container">
+    <div class="p-5 border rounded bg-white shadow-sm" style="margin: auto; max-width: 500px;">
         <div class="card-body text-center">
             <img src="<?= $image_url ?: 'uploads/assets/default-user.png' ?>" class="rounded-circle mb-3 border" alt="Profile Image" style="width: 120px; height: 120px; object-fit: cover;">
             <h4 class="card-title mb-1"><?= htmlspecialchars($first_name . ' ' . $last_name) ?></h4>
@@ -56,7 +56,7 @@ $stmt->close();
             <div class="row mt-4">
                 <div class="col d-flex justify-content-between">
                     <a class="btn btn-primary w-50 me-2" href="dashboard.php?page=user_management">Back</a>
-                    <a class="btn btn-danger w-50 me-2" href="dashboard.php?page=edit_user&id=<?= $_SESSION['user_id'] ?>">Edit Profile</a>
+                    <a class="btn btn-danger w-50 me-2" href="dashboard.php?page=user_profile_edit&id=<?= $_SESSION['user_id'] ?>">Edit Profile</a>
                 </div>
             </div>
         </div>

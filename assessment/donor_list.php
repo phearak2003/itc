@@ -1,4 +1,9 @@
 <?php
+if($_SESSION['role'] !== 'admin' || $_SESSION['role'] !== 'staff') {
+    header("Location: dashboard.php");
+    exit;
+}
+
 $result = $mysqli->query("SELECT * FROM assessments WHERE status = 'Pass' ORDER BY appointment_date DESC");
 ?>
 
