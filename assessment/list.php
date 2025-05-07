@@ -1,6 +1,6 @@
 <?php
 if($_SESSION['role'] !== 'admin' || $_SESSION['role'] !== 'staff') {
-    header("Location: dashboard.php");
+    header("Location: dashboard.php?page=no_permission");
     exit;
 }
 

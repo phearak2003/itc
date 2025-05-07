@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
+    header("Location: dashboard.php?page=no_permission");
     exit;
 }
 

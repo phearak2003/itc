@@ -76,18 +76,35 @@ CREATE TABLE hospitals (
     country VARCHAR(100),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+CREATE TABLE question_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT
+);
+CREATE TABLE assessment_questions (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question_text TEXT NOT NULL,
+    category_id INT NOT NULL,
+    expected_answer VARCHAR(10),
+    is_required BOOLEAN DEFAULT TRUE,
+    order_no INT,
+    FOREIGN KEY (category_id) REFERENCES question_categories(id) ON DELETE CASCADE
+);
+
+
+
 CREATE TABLE donation_appointments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     hospital_id INT NOT NULL,
     appointment_date DATE NOT NULL,
-    status ENUM('Pending', 'Scheduled', 'Completed', 'Cancelled') DEFAULT 'Pending',
+    status ENUM('Pending', 'Accepted', 'Completed', 'Cancelled', 'Expired') DEFAULT 'Pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (hospital_id) REFERENCES hospitals(id)
 );
-
+drop table assessment_questions;
 
 
 CREATE TABLE assessments (

@@ -1,6 +1,6 @@
 <?php
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: dashboard.php");
+    header("Location: dashboard.php?page=no_permission");
     exit;
 }
 
@@ -31,34 +31,35 @@ if ($selected_role > 0) {
 }
 ?>
 
-<div class="container py-5">
-    <div class="d-flex justify-content-between align mb-4">
-        <h2>User Management</h2>
-        <a href="?page=add_user" class="btn btn-secondary">
-            <i class="bi bi-plus-circle"></i>
-        </a>
+<?php if (isset($_GET['error']) && $_GET['error']): ?>
+    <div class="alert alert-warning"><?php echo htmlspecialchars($_GET['error']); ?></div>
+<?php endif; ?>
+
+<h2 class="text-center">User Management</h2>
+
+<a href="?page=add_user" class="btn btn-primary mb-4">Add New User</a>
+
+<form method="GET" class="mb-3">
+    <input type="hidden" name="page" value="user_management">
+    <div class="input-group" style="max-width: 300px;">
+        <label class="input-group-text">Filter by Role</label>
+        <select name="role_id" class="form-select" onchange="this.form.submit()">
+            <option value="0">All Roles</option>
+            <?php while ($role = $roles_result->fetch_assoc()): ?>
+                <option value="<?= $role['id'] ?>" <?= $selected_role == $role['id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars(ucfirst($role['name'])) ?>
+                </option>
+            <?php endwhile; ?>
+        </select>
     </div>
+</form>
 
-    <?php if (isset($_GET['error']) && $_GET['error']): ?>
-        <div class="alert alert-warning"><?php echo htmlspecialchars($_GET['error']); ?></div>
-    <?php endif; ?>
-
-    <form method="GET" class="mb-3">
-        <input type="hidden" name="page" value="user_management">
-        <div class="input-group" style="max-width: 300px;">
-            <label class="input-group-text">Filter by Role</label>
-            <select name="role_id" class="form-select" onchange="this.form.submit()">
-                <option value="0">All Roles</option>
-                <?php while ($role = $roles_result->fetch_assoc()): ?>
-                    <option value="<?= $role['id'] ?>" <?= $selected_role == $role['id'] ? 'selected' : '' ?>>
-                        <?= htmlspecialchars(ucfirst($role['name'])) ?>
-                    </option>
-                <?php endwhile; ?>
-            </select>
-        </div>
-    </form>
-
-    <div class="card-body">
+<!-- Hospitals Table -->
+<div class="card shadow-sm">
+    <div class="card-header bg-secondary text-white">
+        <h5>User Management</h5>
+    </div>
+    <div class="card-body p-0">
         <table class="table table-bordered table-striped table-hover align-middle">
             <thead class="table-primary">
                 <tr>

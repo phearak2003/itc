@@ -1,8 +1,11 @@
 <?php
-// Include the database connection file
+if ($_SESSION['role'] !== 'admin') {
+    header("Location: dashboard.php?page=no_permission");
+    exit;
+}
+
 include("connection.php");
 
-// Insert, update, and delete operations
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Insert new hospital
     if (isset($_POST['add_hospital'])) {
@@ -44,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <h2 class="text-center">Hospital Management</h2>
 
 <!-- Button to open the add hospital modal -->
-<button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addHospitalModal">Add New Hospital</button>
+<button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addHospitalModal">Add New Hospital</button>
 
 <!-- Hospitals Table -->
 <div class="card shadow-sm">

@@ -131,6 +131,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 <li class="nav-item">
                     <a href="dashboard.php?page=list_hospital" class="nav-link <?php echo ($current_page == 'list_hospital') ? 'active' : ''; ?>">Hospital</a>
                 </li>
+                <li class="nav-item">
+                    <a href="dashboard.php?page=list_question" class="nav-link <?php echo ($current_page == 'list_question') ? 'active' : ''; ?>">Question</a>
+                </li>
             <?php endif; ?>
         </ul>
     </div>
@@ -157,8 +160,13 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     case 'assessment_history':
                         include 'assessment/history.php';
                         break;
-                    case 'donor_list':
-                        include 'assessment/donor_list.php';
+                    case 'assessment_list':
+                        include 'assessment/list.php';
+                        break;
+
+                    // Question Management
+                    case 'list_question':
+                        include 'assessment/question/list.php';
                         break;
 
                     // User Management

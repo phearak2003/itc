@@ -51,7 +51,6 @@ if (isset($_POST['action']) && $_POST['action'] === 'delete') {
     $stmt->close();
 }
 
-// Fetch categories
 $categories = [];
 $result = $mysqli->query("SELECT * FROM question_categories ORDER BY id DESC");
 while ($row = $result->fetch_assoc()) {
@@ -61,12 +60,11 @@ $mysqli->close();
 ?>
 
 <h2 class="text-center">Category Management</h2>
-<!-- Add Category Button and Modal -->
 <button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addModal">Add New Category</button>
 
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered"> <!-- Center modal vertically -->
+    <div class="modal-dialog modal-dialog-centered">
         <form method="POST" class="modal-content">
             <input type="hidden" name="action" value="add">
             <div class="modal-header bg-primary text-white">
@@ -89,7 +87,6 @@ $mysqli->close();
         </form>
     </div>
 </div>
-
 
 <!-- Display Messages -->
 <?php if ($message): ?>
