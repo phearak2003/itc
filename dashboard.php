@@ -125,6 +125,12 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 <li class="nav-item">
                     <a href="dashboard.php?page=user_management" class="nav-link <?php echo ($current_page == 'user_management') ? 'active' : ''; ?>">User Management</a>
                 </li>
+                <li class="nav-item">
+                    <a href="dashboard.php?page=list_cate" class="nav-link <?php echo ($current_page == 'list_cate') ? 'active' : ''; ?>">Assessment Category</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.php?page=list_hospital" class="nav-link <?php echo ($current_page == 'list_hospital') ? 'active' : ''; ?>">Hospital</a>
+                </li>
             <?php endif; ?>
         </ul>
     </div>
@@ -154,6 +160,8 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     case 'donor_list':
                         include 'assessment/donor_list.php';
                         break;
+
+                    // User Management
                     case 'view_user':
                         include 'user/view.php';
                         break;
@@ -175,6 +183,23 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     case 'user_profile_edit':
                         include 'user/edit_profile.php';
                         break;
+
+                    // Question Category Management
+                    case 'list_cate':
+                        include 'assessment/category/list.php';
+                        break;
+
+                    // Hospital Management
+                    case 'list_hospital':
+                        include 'hospital/list.php';
+                        break;
+
+                    // Authorize Management
+                    case 'no_permission':
+                        include 'no_permission.php';
+                        break;
+
+                    // Default
                     default:
                         include('dashboard_page.php');
                 }
