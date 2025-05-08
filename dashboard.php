@@ -2,7 +2,7 @@
 include('connection.php');
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+    header("Location: auth/login.php");
     exit;
 }
 
@@ -134,6 +134,10 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 <li class="nav-item">
                     <a href="dashboard.php?page=list_question" class="nav-link <?php echo ($current_page == 'list_question') ? 'active' : ''; ?>">Question</a>
                 </li>
+                <!-- Test -->
+                <li class="nav-item">
+                    <a href="dashboard.php?page=assessment" class="nav-link <?php echo ($current_page == 'assessment') ? 'active' : ''; ?>">Assessment</a>
+                </li>
             <?php endif; ?>
         </ul>
     </div>
@@ -162,6 +166,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                         break;
                     case 'assessment_list':
                         include 'assessment/list.php';
+                        break;
+                    case 'assessment_success':
+                        include 'assessment/assessment_success.php';
                         break;
 
                     // Question Management

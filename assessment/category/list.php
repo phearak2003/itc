@@ -112,21 +112,18 @@ $mysqli->close();
                 <?php $no = 1; ?>
                 <?php foreach ($categories as $cat): ?>
                     <tr>
-                        <td><?= $no++ ?></td> <!-- Display row number -->
+                        <td><?= $no++ ?></td>
                         <td><?= htmlspecialchars($cat['name']) ?></td>
                         <td><?= htmlspecialchars($cat['description']) ?></td>
                         <td>
-                            <!-- View Button with Icon -->
                             <button class="btn btn-sm btn-info text-white" data-bs-toggle="modal" data-bs-target="#viewModal<?= $cat['id'] ?>">
                                 <i class="bi bi-eye"></i> <!-- Eye Icon for View -->
                             </button>
 
-                            <!-- Edit Button with Icon -->
                             <button class="btn btn-sm btn-warning" onclick="fillEditForm(<?= $cat['id'] ?>, '<?= htmlspecialchars($cat['name']) ?>', '<?= htmlspecialchars($cat['description']) ?>')">
                                 <i class="bi bi-pencil"></i> <!-- Pencil Icon for Edit -->
                             </button>
 
-                            <!-- Delete Button with Icon -->
                             <form method="POST" class="d-inline">
                                 <input type="hidden" name="action" value="delete">
                                 <input type="hidden" name="id" value="<?= $cat['id'] ?>">

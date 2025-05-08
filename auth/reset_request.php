@@ -6,7 +6,7 @@ session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $username = trim($_POST['username']);
-    sendOtp($username);
+    $error = sendOtp($username);
 }
 ?>
 
@@ -24,9 +24,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <label for="username" class="form-label">Username *</label>
                 <input type="text" name="username" id="username" class="form-control" required>
             </div>
+
             <?php if (!empty($error)): ?>
                 <div class="alert alert-danger"><?php echo $error; ?></div>
             <?php endif; ?>
+
             <button type="submit" class="btn btn-primary w-100">Send OTP via Telegram</button>
 
             <hr>

@@ -81,8 +81,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-5">
-                <div class="card shadow">
-                    <div class="card-body my-5">
+                <div class="card shadow p-5">
+                    <div class="card-body my-3">
                         <h3 class="text-center text-danger mb-4">User Login</h3>
                         <form method="POST" action="">
                             <div class="mb-3">

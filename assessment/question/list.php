@@ -3,8 +3,9 @@ include 'connection.php';
 
 // Handle INSERT
 if (isset($_POST['add'])) {
+    $is_required = $_POST['is_required'] == 'on' ? 1 : 0;
     $stmt = $mysqli->prepare("INSERT INTO assessment_questions (question_text, category_id, expected_answer, is_required, order_no) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sisii", $_POST['question_text'], $_POST['category_id'], $_POST['expected_answer'], $_POST['is_required'], $_POST['order_no']);
+    $stmt->bind_param("sisii", $_POST['question_text'], $_POST['category_id'], $_POST['expected_answer'], $is_required, $_POST['order_no']);
     $stmt->execute();
     $stmt->close();
     header("Location: dashboard.php?page=list_question");
@@ -32,7 +33,7 @@ if (isset($_POST['delete'])) {
 }
 
 // Fetch questions and categories
-$questions = $mysqli->query("SELECT aq.*, qc.name AS category_name FROM assessment_questions aq JOIN question_categories qc ON aq.category_id = qc.id ORDER BY aq.order_no ASC");
+$questions = $mysqli->query("SELECT aq.*, qc.name AS category_name FROM assessment_questions aq JOIN question_categories qc ON aq.category_id = qc.id ORDER BY qc.name ASC, aq.order_no ASC");
 $categories = $mysqli->query("SELECT * FROM question_categories");
 
 function esc($str)
@@ -71,7 +72,11 @@ function esc($str)
 
                 <div class="mb-3">
                     <label for="expected_answer" class="form-label">Expected Answer</label>
-                    <input type="text" id="expected_answer" name="expected_answer" class="form-control" placeholder="Expected Answer">
+                    <select class="form-select" id="expected_answer" name="expected_answer" required>
+                        <option value="">Select</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
                 </div>
 
                 <div class="mb-3">
@@ -95,7 +100,7 @@ function esc($str)
 <!-- Hospitals Table -->
 <div class="card shadow-sm">
     <div class="card-header bg-secondary text-white">
-        <h5>Hospital List</h5>
+        <h5>Question List</h5>
     </div>
     <div class="card-body p-0">
         <table class="table table-bordered">
@@ -111,10 +116,11 @@ function esc($str)
                 </tr>
             </thead>
             <tbody>
+                <?php $no = 1; ?>
                 <?php if ($questions->num_rows > 0): ?>
                     <?php while ($q = $questions->fetch_assoc()): ?>
                         <tr>
-                            <td><?= esc($q['id']) ?></td>
+                            <td><?= $no++ ?></td>
                             <td><?= esc($q['question_text']) ?></td>
                             <td><?= esc($q['category_name']) ?></td>
                             <td><?= esc($q['expected_answer']) ?></td>
@@ -178,7 +184,11 @@ function esc($str)
 
                                             <div class="mb-3">
                                                 <label for="expected_answer" class="form-label">Expected Answer</label>
-                                                <input type="text" id="expected_answer" name="expected_answer" class="form-control" value="<?= esc($q['expected_answer']) ?>">
+                                                <select class="form-select" id="expected_answer" name="expected_answer" required>
+                                                    <option value="">Select</option>
+                                                    <option value="Yes" <?= ($q['expected_answer'] === 'Yes') ? 'selected' : '' ?>>Yes</option>
+                                                    <option value="No" <?= ($q['expected_answer'] === 'No') ? 'selected' : '' ?>>No</option>
+                                                </select>
                                             </div>
 
                                             <div class="mb-3">

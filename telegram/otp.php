@@ -47,18 +47,18 @@ function sendOtp($username)
                     $_SESSION['reset_user'] = $user_id;
                     $_SESSION['reset_username'] = $username;
                     header("Location: verify_otp.php");
-                    exit;
+                    return '';
                 } else {
-                    $error = "No Telegram chat ID found for this user.";
+                    return "No Telegram chat ID found for this user.";
                 }
             } else {
-                $error = "Telegram contact not found for this user.";
+                return "Telegram contact not found for this user.";
             }
         } else {
-            $error = "User not found.";
+            return "User not found.";
         }
     } else {
         http_response_code(400);
-        echo "Invalid request.";
+        return "Invalid request.";
     }
 }

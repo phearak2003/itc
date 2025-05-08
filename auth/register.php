@@ -129,18 +129,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="first_name" class="form-label">First Name</label>
+                    <label for="first_name" class="form-label">First Name *</label>
                     <input type="text" class="form-control" id="first_name" name="first_name" required>
                 </div>
                 <div class="col-md-6">
-                    <label for="last_name" class="form-label">Last Name</label>
+                    <label for="last_name" class="form-label">Last Name *</label>
                     <input type="text" class="form-control" id="last_name" name="last_name" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="gender" class="form-label">Gender</label>
+                    <label for="gender" class="form-label">Gender *</label>
                     <select class="form-select" id="gender" name="gender" required>
                         <option value="">Select</option>
                         <option value="male">Male</option>
@@ -148,14 +148,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     </select>
                 </div>
                 <div class="col-md-6">
-                    <label for="dob" class="form-label">Date of Birth</label>
+                    <label for="dob" class="form-label">Date of Birth *</label>
                     <input type="date" class="form-control" id="dob" name="dob" required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <div class="col-md-6">
-                    <label for="blood_type" class="form-label">Blood Type</label>
+                    <label for="blood_type" class="form-label">Blood Type *</label>
                     <select class="form-select" id="blood_type" name="blood_type" required>
                         <option value="">Select</option>
                         <option value="A+">A+</option>

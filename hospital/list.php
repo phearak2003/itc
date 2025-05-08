@@ -70,10 +70,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </thead>
             <tbody>
                 <?php
+                $no = 1;
                 $result = $mysqli->query("SELECT * FROM hospitals");
                 while ($row = $result->fetch_assoc()) {
                     echo "<tr>
-                    <td>{$row['id']}</td>
+                    <td>" . $no++ . "</td>
                     <td>{$row['name']}</td>
                     <td>{$row['contact_number']}</td>
                     <td>{$row['telegram_chat_id']}</td>
