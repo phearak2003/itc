@@ -138,6 +138,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 <li class="nav-item">
                     <a href="dashboard.php?page=assessment" class="nav-link <?php echo ($current_page == 'assessment') ? 'active' : ''; ?>">Assessment</a>
                 </li>
+                <li class="nav-item">
+                    <a href="dashboard.php?page=appointment_list" class="nav-link <?php echo ($current_page == 'appointment_list') ? 'active' : ''; ?>">Appointment</a>
+                </li>
             <?php endif; ?>
         </ul>
     </div>
@@ -167,8 +170,19 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     case 'assessment_list':
                         include 'assessment/list.php';
                         break;
-                    case 'assessment_success':
-                        include 'assessment/assessment_success.php';
+                    case 'assessment_result':
+                        include 'assessment/assessment_result.php';
+                        break;
+
+                    // Appointment Management
+                    case 'appointment':
+                        include 'appointment/appointment.php';
+                        break;
+                    case 'appointment_list':
+                        include 'appointment/list.php';
+                        break;
+                    case 'view_appointment':
+                        include 'appointment/view.php';
                         break;
 
                     // Question Management

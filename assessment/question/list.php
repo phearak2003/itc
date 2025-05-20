@@ -127,11 +127,19 @@ function esc($str)
                             <td><?= $q['is_required'] ? 'Yes' : 'No' ?></td>
                             <td><?= esc($q['order_no']) ?></td>
                             <td>
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal<?= $q['id'] ?>">View</button>
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?= $q['id'] ?>">Edit</button>
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal<?= $q['id'] ?>">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?= $q['id'] ?>">
+                                    <i class="bi bi-pencil"></i>
+                                </button>
+
                                 <form method='POST' class='d-inline'>
                                     <input type='hidden' name='id' value='<?= $q['id'] ?>'>
-                                    <button type='submit' name='delete' class='btn btn-danger btn-sm' onclick='return confirm("Are you sure?")'>Delete</button>
+                                    <button type='submit' name='delete' class='btn btn-danger btn-sm' onclick='return confirm("Are you sure?")'>
+                                        <i class="bi bi-trash"></i>
+                                    </button>
                                 </form>
                             </td>
                         </tr>

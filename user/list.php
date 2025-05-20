@@ -98,14 +98,14 @@ if ($selected_role > 0) {
                                 <?php endif; ?>
                             </td>
                             <td>
+                                <a href="?page=view_user&id=<?= $row['id'] ?>" class="btn btn-primary btn-sm" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
                                 <a href="?page=edit_user&id=<?= $row['id'] ?>" class="btn btn-warning btn-sm" title="Edit">
                                     <i class="bi bi-pencil-square"></i>
                                 </a>
                                 <a href="?page=delete_user&id=<?= $row['id'] ?>" onclick="return confirm('Are you sure you want to delete this user?');" class="btn btn-danger btn-sm" title="Delete">
                                     <i class="bi bi-trash"></i>
-                                </a>
-                                <a href="?page=view_user&id=<?= $row['id'] ?>" class="btn btn-primary btn-sm" title="View">
-                                    <i class="bi bi-eye"></i>
                                 </a>
                             </td>
                         </tr>

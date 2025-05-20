@@ -1,0 +1,8 @@
+<div class="icon">
+    <?php if ($status == 'Pending'): ?> 🕒
+    <?php elseif ($status == 'Accepted'): ?> ✅
+    <?php elseif ($status == 'Completed'): ?> 🩸
+    <?php elseif ($status == 'Cancelled'): ?> ❌
+    <?php elseif ($status == 'Expired'): ?> ⌛
+    <?php endif; ?>
+</div>

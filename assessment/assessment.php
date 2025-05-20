@@ -1,7 +1,55 @@
 <?php
-header('Location: dashboard.php?page=assessment_success');
+ob_start();
 require 'connection.php';
 
+// 
+$userId = (int)$_SESSION['user_id'];
+
+if (!$userId) {
+    header('Location: login.php');
+    exit();
+}
+
+// Step 1: Fetch latest assessment for the user
+$stmtCheck = $mysqli->prepare("
+    SELECT * FROM assessments 
+    WHERE user_id = ? 
+    ORDER BY create_date DESC 
+    LIMIT 1
+");
+$stmtCheck->bind_param("i", $userId);
+$stmtCheck->execute();
+$resultStmtCheck = $stmtCheck->get_result();
+
+if ($rowStmtCheck = $resultStmtCheck->fetch_assoc()) {
+    // Step 2: Check if passed
+    if ($rowStmtCheck['is_pass'] == 1) {
+        // Step 3: Check if older than 3 months
+        $createDate = new DateTime($rowStmtCheck['create_date']);
+        $threeMonthsAgo = (new DateTime())->modify('-3 months');
+
+        if ($createDate < $threeMonthsAgo) {
+            // Step 4: Check if not yet booked
+            if ($rowStmtCheck['is_book_appointment'] == 0) {
+                // echo "Assessment is passed, expired, and not booked yet.";
+                header('Location: dashboard.php?page=assessment_result');
+            } else {
+                // echo "Assessment is passed and expired, but already booked.";
+            }
+        } else {
+            // echo "Assessment is passed and still valid.";
+            header('Location: dashboard.php?page=assessment_result');
+        }
+    } else {
+        // echo "Assessment not passed.";
+    }
+} else {
+    // echo "No assessment found.";
+}
+
+
+
+// 
 $categoriesQuery = $mysqli->query("SELECT * FROM question_categories");
 $categories = [];
 
@@ -63,10 +111,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $mysqli->prepare("UPDATE assessments SET is_pass = ? WHERE id = ?");
         $stmt->bind_param('ii', $isPass, $assessmentId);
         $stmt->execute();
-
         $mysqli->commit();
 
-        header('Location: assessment_success.php');
+        header('Location: assessment_result.php');
         exit();
     } catch (Exception $e) {
         $mysqli->rollback();

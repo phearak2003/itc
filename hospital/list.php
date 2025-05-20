@@ -82,11 +82,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <td>{$row['city']}</td>
                     <td>{$row['country']}</td>
                     <td>
-                        <button class='btn btn-info btn-sm' data-bs-toggle='modal' data-bs-target='#viewHospitalModal{$row['id']}'>View</button>
-                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editHospitalModal{$row['id']}'>Edit</button>
+                        <button class='btn btn-info btn-sm' data-bs-toggle='modal' data-bs-target='#viewHospitalModal{$row['id']}'>
+                            <i class='bi bi-eye'></i>
+                        </button>
+                        <button class='btn btn-warning btn-sm' data-bs-toggle='modal' data-bs-target='#editHospitalModal{$row['id']}'>
+                            <i class='bi bi-pencil'></i>
+                        </button>
                         <form method='POST' class='d-inline'>
                             <input type='hidden' name='id' value='{$row['id']}'>
-                            <button type='submit' name='delete_hospital' class='btn btn-danger btn-sm' onclick='return confirm(\"Are you sure?\")'>Delete</button>
+                            <button type='submit' name='delete_hospital' class='btn btn-danger btn-sm' onclick='return confirm(\'Are you sure?\')'>
+                            <i class='bi bi-trash'></i>
+                            </button>
                         </form>
                     </td>
                 </tr>";

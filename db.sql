@@ -107,20 +107,41 @@ CREATE TABLE assessment_details (
     FOREIGN KEY (assessment_id) REFERENCES assessments(id),
     FOREIGN KEY (question_id) REFERENCES assessment_questions(id)
 );
+
+CREATE TABLE hospitals (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    contact_number VARCHAR(20),
+    telegram_chat_id VARCHAR(50),
+    address TEXT NOT NULL,
+    city VARCHAR(100),
+    country VARCHAR(100),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 CREATE TABLE donation_appointments (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     hospital_id INT NOT NULL,
     assessment_id INT NOT NULL,
     appointment_date DATE NOT NULL,
-    status ENUM('Pending', 'Accepted', 'Completed', 'Cancelled', 'Expired') DEFAULT 'Pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id),
     FOREIGN KEY (assessment_id) REFERENCES assessments(id),
     FOREIGN KEY (hospital_id) REFERENCES hospitals(id)
 );
+CREATE TABLE donation_appointment_status_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    donation_appointment_id INT NOT NULL,
+    status ENUM('Pending', 'Accepted', 'Completed', 'Rejected', 'Expired') DEFAULT 'Pending',
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (donation_appointment_id) REFERENCES donation_appointments(id)
+);
 
+INSERT INTO donation_appointment_status_history (donation_appointment_id, status)
+VALUES (1, 'Pending'), (1, 'Rejected');
+
+update donation_appointment_status_history set is_pass = 1 where id = 1;
 
 
 INSERT INTO roles (name) VALUES ('admin'), ('staff'), ('donor'), ('hospital');
@@ -129,6 +150,9 @@ INSERT INTO user_contacts (user_id, telegram_chat_id) VALUES (1, '878514898'), (
 SELECT * FROM assessments;
 SELECT * FROM assessment_details;
 SELECT * FROM assessment_questions;
+SELECT * FROM hospitals;
+SELECT * FROM donation_appointments;
+SELECT * FROM donation_appointment_status_history;
 SELECT id FROM users WHERE username = 'test';
 SELECT telegram_chat_id FROM user_contacts WHERE user_id = 9;
 select * from users;
@@ -149,4 +173,4 @@ LEFT JOIN user_contacts uc ON u.id = uc.user_id
 JOIN roles r ON u.role_id = r.id 
 WHERE u.id = 13;
 
-drop table assessments;
+drop table donation_appointment_status_history;
