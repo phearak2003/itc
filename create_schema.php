@@ -211,6 +211,10 @@ INSERT INTO assessment_questions (question_text, category_id, expected_answer, i
 ('Are you breastfeeding?', 7, 'No', TRUE, 2),
 ('Have you had a menstrual period in the last 3 days?', 7, 'No', TRUE, 3),
 ('Are you taking hormonal contraceptives or other medications that affect your menstrual cycle?', 7, 'No', TRUE, 4);
+
+INSERT INTO hospitals (name, contact_number, telegram_chat_id, address, city, country, created_at) 
+VALUES ('National Blood Transfusion Center Cambodia', '0961234567', '1236071046', 'GWV3+HR7, Yothapol Khemarak Phoumin Blvd (271), Phnom Penh', 'Phnom Penh', 'kh', '2025-05-21 21:24:47');
+
 ";
 
 if ($mysqli->multi_query($init_data)) {
