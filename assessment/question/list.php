@@ -32,20 +32,75 @@ if (isset($_POST['delete'])) {
     exit;
 }
 
-// Fetch questions and categories
-$questions = $mysqli->query("SELECT aq.*, qc.name AS category_name FROM assessment_questions aq JOIN question_categories qc ON aq.category_id = qc.id ORDER BY qc.name ASC, aq.order_no ASC");
-$categories = $mysqli->query("SELECT * FROM question_categories");
-
 function esc($str)
 {
     return htmlspecialchars($str, ENT_QUOTES);
 }
+
+// Pagination setup
+$limit = 10;
+$page = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+$pageName = isset($_GET['page']) ? $_GET['page'] : 'list_question';
+$currentPage = isset($_GET['p']) ? max(1, intval($_GET['p'])) : 1;
+$offset = ($currentPage - 1) * $limit;
+
+// Search logic
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$searchSQL = $search ? "WHERE aq.question_text LIKE ?" : "";
+
+// Get total records for pagination
+if ($search) {
+    $countStmt = $mysqli->prepare("SELECT COUNT(*) FROM assessment_questions aq $searchSQL");
+    $like = "%" . $search . "%";
+    $countStmt->bind_param("s", $like);
+} else {
+    $countStmt = $mysqli->prepare("SELECT COUNT(*) FROM assessment_questions aq");
+}
+$countStmt->execute();
+$countStmt->bind_result($totalRows);
+$countStmt->fetch();
+$countStmt->close();
+
+$totalPages = ceil($totalRows / $limit);
+
+// Fetch paginated questions
+if ($search) {
+    $querySQL = "SELECT aq.*, qc.name AS category_name 
+                 FROM assessment_questions aq 
+                 JOIN question_categories qc ON aq.category_id = qc.id 
+                 $searchSQL 
+                 ORDER BY qc.name ASC, aq.order_no ASC 
+                 LIMIT ?, ?";
+    $queryStmt = $mysqli->prepare($querySQL);
+    // MySQLi requires integers for LIMIT params
+    $queryStmt->bind_param("sii", $like, $offset, $limit);
+} else {
+    $querySQL = "SELECT aq.*, qc.name AS category_name 
+                 FROM assessment_questions aq 
+                 JOIN question_categories qc ON aq.category_id = qc.id 
+                 ORDER BY qc.name ASC, aq.order_no ASC 
+                 LIMIT ?, ?";
+    $queryStmt = $mysqli->prepare($querySQL);
+    $queryStmt->bind_param("ii", $offset, $limit);
+}
+
+$queryStmt->execute();
+$questions = $queryStmt->get_result();
 ?>
 
 <h2 class="text-center">Assessment Questions</h2>
 
-<!-- Button to open the add hospital modal -->
-<button class="btn btn-primary mb-4" data-bs-toggle="modal" data-bs-target="#addModal">Add New Question</button>
+<!-- Search and Add -->
+<div class="d-flex justify-content-between mb-3">
+    <form method="GET" class="d-flex">
+        <input type="hidden" name="page" value="list_question">
+        <input type="hidden" name="p" value="<?= intval($page) ?>">
+        <input type="text" name="search" class="form-control me-2" placeholder="Search question..." value="<?= esc($search) ?>">
+        <button class="btn btn-outline-primary" type="submit">Search</button>
+    </form>
+
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">Add New Question</button>
+</div>
 
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1">
@@ -98,12 +153,13 @@ function esc($str)
 </div>
 
 <!-- Hospitals Table -->
-<div class="card shadow-sm">
+<div class="card">
     <div class="card-header bg-secondary text-white">
         <h5>Question List</h5>
     </div>
+
     <div class="card-body p-0">
-        <table class="table table-bordered">
+        <table class="table table-bordered mb-0">
             <thead>
                 <tr>
                     <th>#</th>
@@ -116,7 +172,7 @@ function esc($str)
                 </tr>
             </thead>
             <tbody>
-                <?php $no = 1; ?>
+                <?php $no = $offset + 1; ?>
                 <?php if ($questions->num_rows > 0): ?>
                     <?php while ($q = $questions->fetch_assoc()): ?>
                         <tr>
@@ -127,14 +183,9 @@ function esc($str)
                             <td><?= $q['is_required'] ? 'Yes' : 'No' ?></td>
                             <td><?= esc($q['order_no']) ?></td>
                             <td>
-                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal<?= $q['id'] ?>">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-
-                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?= $q['id'] ?>">
-                                    <i class="bi bi-pencil"></i>
-                                </button>
-
+                                <!-- Actions -->
+                                <button class="btn btn-info btn-sm" data-bs-toggle="modal" data-bs-target="#viewModal<?= $q['id'] ?>"><i class="bi bi-eye"></i></button>
+                                <button class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal<?= $q['id'] ?>"><i class="bi bi-pencil"></i></button>
                                 <form method='POST' class='d-inline'>
                                     <input type='hidden' name='id' value='<?= $q['id'] ?>'>
                                     <button type='submit' name='delete' class='btn btn-danger btn-sm' onclick='return confirm("Are you sure?")'>
@@ -142,9 +193,7 @@ function esc($str)
                                     </button>
                                 </form>
                             </td>
-                        </tr>
-
-                        <!-- View Modal -->
+                        </tr><!-- View Modal -->
                         <div class="modal fade" id="viewModal<?= $q['id'] ?>" tabindex="-1" aria-labelledby="viewModalLabel<?= $q['id'] ?>" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
@@ -228,3 +277,29 @@ function esc($str)
         </table>
     </div>
 </div>
+
+<!-- Pagination -->
+<?php if ($totalPages > 1): ?>
+    <nav class="mt-3">
+        <ul class="pagination justify-content-center">
+
+            <!-- Prev button -->
+            <li class="page-item <?= ($page <= 1) ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=list_question&p=<?= max(1, $page - 1) ?>&search=<?= urlencode($search) ?>" tabindex="-1">Previous</a>
+            </li>
+
+            <!-- Page numbers -->
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <li class="page-item <?= ($i == $page) ? 'active' : '' ?>">
+                    <a class="page-link" href="?page=list_question&p=<?= $i ?>&search=<?= urlencode($search) ?>"><?= $i ?></a>
+                </li>
+            <?php endfor; ?>
+
+            <!-- Next button -->
+            <li class="page-item <?= ($page >= $totalPages) ? 'disabled' : '' ?>">
+                <a class="page-link" href="?page=list_question&p=<?= min($totalPages, $page + 1) ?>&search=<?= urlencode($search) ?>">Next</a>
+            </li>
+
+        </ul>
+    </nav>
+<?php endif; ?>

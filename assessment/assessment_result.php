@@ -6,7 +6,7 @@ $userId = $_SESSION['user_id'] ?? null;
 
 if (!$userId) {
     header('Location: login.php');
-    exit();
+    exit;
 }
 
 // 

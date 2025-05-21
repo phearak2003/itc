@@ -1,3 +1,5 @@
+<?php ob_start(); ?>
+
 <?php
 include('connection.php');
 session_start();
@@ -231,6 +233,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     // Default
                     default:
                         include('dashboard_page.php');
+                        break;
                 }
             } else {
                 echo "<p>Welcome to the dashboard</p>";
@@ -243,3 +246,4 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 </body>
 
 </html>
+<?php ob_end_flush(); ?>

@@ -9,8 +9,10 @@ if ($mysqli->connect_errno) {
 $mysqli->query("DROP DATABASE IF EXISTS blood_donation");
 
 // Create database
-$mysqli->query("CREATE DATABASE IF NOT EXISTS blood_donation");
+$mysqli->query("CREATE DATABASE blood_donation");
 $mysqli->select_db("blood_donation");
+
+echo "✅ Database created successfully.<br>";
 
 // Create tables
 $schema = "
@@ -74,14 +76,6 @@ CREATE TABLE question_categories (
     name VARCHAR(100) NOT NULL,
     description TEXT
 );
-INSERT INTO question_categories (name, description) VALUES
-('General Health', 'Basic health check before donation'),
-('Medical History', 'Questions about past and current medical conditions'),
-('Infectious Diseases', 'Check for risk of disease transmission'),
-('Travel History', 'Recent travel to areas with health risks'),
-('Lifestyle Risk', 'Behavioral risk factors'),
-('Donation History', 'History of previous donations'),
-('Female-Specific', 'Special questions for female donors');
 
 CREATE TABLE assessment_questions (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -92,38 +86,6 @@ CREATE TABLE assessment_questions (
     order_no INT,
     FOREIGN KEY (category_id) REFERENCES question_categories(id) ON DELETE CASCADE
 );
-INSERT INTO assessment_questions (question_text, category_id, expected_answer, is_required, order_no) VALUES
--- 1. General Health Questions (category_id = 1)
-('Are you feeling well today?', 1, 'Yes', TRUE, 1),
-('Do you have any cold, flu, or fever symptoms?', 1, 'No', TRUE, 2),
-('Have you recently taken any medications?', 1, 'No', TRUE, 3),
-('Do you have any allergies?', 1, 'No', TRUE, 4),
-
--- 2. Medical History (category_id = 2)
-('Have you ever had heart disease, cancer, epilepsy, diabetes, or other chronic illnesses?', 2, 'No', TRUE, 5),
-('Have you had any recent surgeries or major dental procedures?', 2, 'No', TRUE, 6),
-('Have you received any vaccines or injections in the last few weeks?', 2, 'No', TRUE, 7),
-
--- 3. Infectious Diseases (category_id = 3)
-('Have you ever tested positive for HIV/AIDS, hepatitis B or C, syphilis, or other blood-borne infections?', 3, 'No', TRUE, 8),
-('Have you had jaundice or unexplained weight loss?', 3, 'No', TRUE, 9),
-
--- 4. Travel History (category_id = 4)
-('Have you recently traveled to areas where malaria or other infectious diseases are common?', 4, 'No', TRUE, 10),
-
--- 5. Lifestyle and Risk Behavior (category_id = 5)
-('Do you use or have you ever used intravenous drugs?', 5, 'No', TRUE, 11),
-('Have you had unprotected sex with multiple partners or with someone who has HIV or other STDs?', 5, 'No', TRUE, 12),
-('Have you ever received money or drugs in exchange for sex?', 5, 'No', TRUE, 13),
-
--- 6. Previous Donation History (category_id = 6)
-('Have you donated blood in the last 3 months (for men) or 4 months (for women)?', 6, 'No', TRUE, 14),
-('Have you ever had a reaction to a previous blood donation?', 6, 'No', TRUE, 15),
-
--- 7. Female-Specific Questions (category_id = 7)
-('Are you currently pregnant or have you recently given birth?', 7, 'No', TRUE, 16),
-('Are you breastfeeding?', 7, 'No', TRUE, 17);
-
 
 CREATE TABLE assessments (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -188,73 +150,173 @@ if ($mysqli->multi_query($schema)) {
     die("❌ Error creating schema: " . $mysqli->error);
 }
 
-// Insert default roles
-$roles = ["admin", "staff", "donor", "hospital"];
+$init_data = "
+INSERT INTO question_categories (name, description) VALUES
+('General Health', 'Basic health check before donation'),
+('Medical History', 'Questions about past and current medical conditions'),
+('Infectious Diseases', 'Check for risk of disease transmission'),
+('Travel History', 'Recent travel to areas with health risks'),
+('Lifestyle Risk', 'Behavioral risk factors'),
+('Donation History', 'History of previous donations'),
+('Female-Specific', 'Special questions for female donors');
+
+INSERT INTO assessment_questions (question_text, category_id, expected_answer, is_required, order_no) VALUES
+-- 1. General Health Questions (category_id = 1)
+('Are you feeling well today?', 1, 'Yes', TRUE, 1),
+('Do you have any cold, flu, or fever symptoms?', 1, 'No', TRUE, 2),
+('Have you recently taken any medications?', 1, 'No', TRUE, 3),
+('Do you have any allergies?', 1, 'No', TRUE, 4),
+
+-- 2. Medical History (category_id = 2)
+('Have you ever had heart disease, cancer, epilepsy, diabetes, or other chronic illnesses?', 2, 'No', TRUE, 1),
+('Have you had any recent surgeries or major dental procedures?', 2, 'No', TRUE, 2),
+('Have you received any vaccines or injections in the last few weeks?', 2, 'No', TRUE, 3),
+('Have you ever had a blood transfusion?', 2, 'No', TRUE, 4),
+('Have you ever been diagnosed with a bleeding disorder?', 2, 'No', TRUE, 5),
+('Have you ever been treated for cancer or tumors?', 2, 'No', TRUE, 6),
+('Have you ever had a positive test for hepatitis B or C?', 2, 'No', TRUE, 7),
+('Have you ever had a positive test for syphilis?', 2, 'No', TRUE, 8),
+('Have you ever been diagnosed with a sexually transmitted disease (STD)?', 2, 'No', TRUE, 9),
+
+-- 3. Infectious Diseases (category_id = 3)
+('Have you ever tested positive for HIV/AIDS, hepatitis B or C, syphilis, or other blood-borne infections?', 3, 'No', TRUE, 1),
+('Have you had jaundice or unexplained weight loss?', 3, 'No', TRUE, 2),
+('Have you been in contact with someone who has a contagious disease in the last 3 months?', 3, 'No', TRUE, 3),
+('Have you ever been diagnosed with malaria or other tropical diseases?', 3, 'No', TRUE, 4),
+('Have you ever had a positive test for tuberculosis (TB)?', 3, 'No', TRUE, 5),
+
+-- 4. Travel History (category_id = 4)
+('Have you recently traveled to areas where malaria or other infectious diseases are common?', 4, 'No', TRUE, 1),
+('Have you traveled outside the country in the last 3 months?', 4, 'No', TRUE, 2),
+('Have you lived in or traveled to areas with high rates of HIV or other STDs?', 4, 'No', TRUE, 3),
+('Have you been in contact with someone who has traveled to a high-risk area?', 4, 'No', TRUE, 4),
+
+-- 5. Lifestyle and Risk Behavior (category_id = 5)
+('Do you use or have you ever used intravenous drugs?', 5, 'No', TRUE, 1),
+('Have you had unprotected sex with multiple partners or with someone who has HIV or other STDs?', 5, 'No', TRUE, 2),
+('Have you ever received money or drugs in exchange for sex?', 5, 'No', TRUE, 3),
+('Have you ever been in prison or jail?', 5, 'No', TRUE, 4),
+('Have you ever had a tattoo or body piercing in the last 12 months?', 5, 'No', TRUE, 5),
+('Have you ever had a blood transfusion or organ transplant?', 5, 'No', TRUE, 6),
+
+-- 6. Previous Donation History (category_id = 6)
+('Have you donated blood in the last 3 months (for men) or 4 months (for women)?', 6, 'No', TRUE, 1),
+('Have you ever had a reaction to a previous blood donation?', 6, 'No', TRUE, 2),
+('Have you ever been deferred from donating blood?', 6, 'No', TRUE, 3),
+('Have you ever had a low hemoglobin level or anemia?', 6, 'No', TRUE, 4),
+('Have you ever had a fainting spell or dizziness after donating blood?', 6, 'No', TRUE, 5),
+
+-- 7. Female-Specific Questions (category_id = 7)
+('Are you currently pregnant or have you recently given birth?', 7, 'No', TRUE, 1),
+('Are you breastfeeding?', 7, 'No', TRUE, 2),
+('Have you had a menstrual period in the last 3 days?', 7, 'No', TRUE, 3),
+('Are you taking hormonal contraceptives or other medications that affect your menstrual cycle?', 7, 'No', TRUE, 4);
+";
+
+if ($mysqli->multi_query($init_data)) {
+    do {
+        if ($result = $mysqli->store_result()) {
+            $result->free();
+        }
+    } while ($mysqli->next_result());
+    echo "✅ Initial data inserted successfully.<br>";
+} else {
+    die("❌ Error inserting initial data: " . $mysqli->error);
+}
+// 1236071046 878514898
+$users = [
+    [
+        'username' => 'admin',
+        'password' => 'Admin@123',
+        'first_name' => 'System',
+        'last_name' => 'Admin',
+        'dob' => '2000-01-01',
+        'gender' => 'male',
+        'blood_type' => 'A+',
+        'role' => 'admin',
+        'telegram_id' => '878514898'
+    ],
+    [
+        'username' => 'chantria',
+        'password' => 'Chantria@123',
+        'first_name' => 'Chum',
+        'last_name' => 'Ratanakchentria',
+        'dob' => '2000-01-01',
+        'gender' => 'female',
+        'blood_type' => 'B+',
+        'role' => 'staff',
+        'telegram_id' => '878514898'
+    ],
+    [
+        'username' => 'donor1',
+        'password' => 'Donor1@123',
+        'first_name' => 'First',
+        'last_name' => 'Donor',
+        'dob' => '1998-05-10',
+        'gender' => 'male',
+        'blood_type' => 'O+',
+        'role' => 'donor',
+        'telegram_id' => '878514898'
+    ],
+    [
+        'username' => 'donor2',
+        'password' => 'Donor2@123',
+        'first_name' => 'Second',
+        'last_name' => 'Donor',
+        'dob' => '1999-07-12',
+        'gender' => 'female',
+        'blood_type' => 'A-',
+        'role' => 'donor',
+        'telegram_id' => '878514898'
+    ],
+    [
+        'username' => 'nbtcc',
+        'password' => 'Nbtcc@123',
+        'first_name' => 'National Blood Transfusion Center Cambodia',
+        'last_name' => '',
+        'dob' => '1990-01-01',
+        'gender' => 'other',
+        'blood_type' => 'AB+',
+        'role' => 'hospital',
+        'telegram_id' => '1236071046'
+    ],
+];
+
+$roles = ['admin', 'staff', 'donor', 'hospital'];
 foreach ($roles as $role) {
     $stmt = $mysqli->prepare("INSERT IGNORE INTO roles (name) VALUES (?)");
     $stmt->bind_param("s", $role);
     $stmt->execute();
+}
+
+foreach ($users as $user) {
+    $stmt = $mysqli->prepare("SELECT id FROM roles WHERE name = ?");
+    $stmt->bind_param("s", $user['role']);
+    $stmt->execute();
+    $stmt->bind_result($role_id);
+    $stmt->fetch();
     $stmt->close();
-}
-echo "✅ Default roles inserted.<br>";
 
-// Default admin data
-$username = "admin";
-$password = password_hash("Admin@123", PASSWORD_DEFAULT);
-$image_url = "uploads/assets/default-user.png";
-$role_name = "admin";
+    $hashed_password = password_hash($user['password'], PASSWORD_BCRYPT);
 
-// Profile data
-$first_name = "Pho";
-$last_name = "Phearak";
-$dob = "2000-01-01";
-$gender = "male";
-$blood_type = "A+";
-
-// Contact data
-$telegram_chat_id = "878514898";
-
-// 1. Get role ID
-$stmt = $mysqli->prepare("SELECT id FROM roles WHERE name = ?");
-$stmt->bind_param("s", $role_name);
-$stmt->execute();
-$stmt->bind_result($role_id);
-$stmt->fetch();
-$stmt->close();
-
-if (!$role_id) {
-    die("❌ Role not found.");
-}
-
-// 2. Insert into users
-$stmt = $mysqli->prepare("INSERT INTO users (username, password, image_url, role_id) VALUES (?, ?, ?, ?)");
-$stmt->bind_param("sssi", $username, $password, $image_url, $role_id);
-
-if ($stmt->execute()) {
+    $stmt = $mysqli->prepare("INSERT INTO users (username, password, image_url, role_id) VALUES (?, ?, ?, ?)");
+    $image_url = 'uploads/assets/default-user.png';
+    $stmt->bind_param("sssi", $user['username'], $hashed_password, $image_url, $role_id);
+    $stmt->execute();
     $user_id = $stmt->insert_id;
-    echo "✅ User created (ID: $user_id)<br>";
     $stmt->close();
 
-    // 3. Insert into user_profiles
-    $stmt = $mysqli->prepare("
-        INSERT INTO user_profiles (user_id, first_name, last_name, dob, gender, blood_type)
-        VALUES (?, ?, ?, ?, ?, ?)
-    ");
-    $stmt->bind_param("isssss", $user_id, $first_name, $last_name, $dob, $gender, $blood_type);
+    $stmt = $mysqli->prepare("INSERT INTO user_profiles (user_id, first_name, last_name, dob, gender, blood_type) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("isssss", $user_id, $user['first_name'], $user['last_name'], $user['dob'], $user['gender'], $user['blood_type']);
     $stmt->execute();
     $stmt->close();
-    echo "✅ User profile inserted.<br>";
 
-    // 4. Insert into user_contacts
-    $stmt = $mysqli->prepare("
-        INSERT INTO user_contacts (user_id, telegram_chat_id)
-        VALUES (?, ?)
-    ");
-    $stmt->bind_param("is", $user_id, $telegram_chat_id);
+    $stmt = $mysqli->prepare("INSERT INTO user_contacts (user_id, telegram_chat_id) VALUES (?, ?)");
+    $stmt->bind_param("is", $user_id, $user['telegram_id']);
     $stmt->execute();
-    $stmt->close();
-    echo "✅ User contact inserted.<br>";
-} else {
-    echo "❌ Failed to insert user: " . $stmt->error;
     $stmt->close();
 }
+
+echo "✅ Default users created successfully.";
+
+echo '<br><br><a href="auth/login.php" style="padding: 10px 20px; background-color: brown; text-align: center; color: white; text-decoration: none; border-radius: 5px;">Login</a>';

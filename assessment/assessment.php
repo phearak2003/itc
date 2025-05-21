@@ -33,12 +33,14 @@ if ($rowStmtCheck = $resultStmtCheck->fetch_assoc()) {
             if ($rowStmtCheck['is_book_appointment'] == 0) {
                 // echo "Assessment is passed, expired, and not booked yet.";
                 header('Location: dashboard.php?page=assessment_result');
+                exit;
             } else {
                 // echo "Assessment is passed and expired, but already booked.";
             }
         } else {
             // echo "Assessment is passed and still valid.";
             header('Location: dashboard.php?page=assessment_result');
+            exit;
         }
     } else {
         // echo "Assessment not passed.";
