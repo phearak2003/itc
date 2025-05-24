@@ -176,7 +176,7 @@ const Home = () => {
               transition: "transform 0.3s ease",
               textDecoration: "none"
             }}
-            href="http://localhost/itc/auth/login.php">👨‍💼 Admin Panel</a>
+            href="http://localhost/itc/portal/auth/login.php">👨‍💼 Admin Panel</a>
         </div>
       </div>
       
