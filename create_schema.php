@@ -1,5 +1,5 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "", "");
+include('connection.php');
 
 if ($mysqli->connect_errno) {
     die("Failed to connect to MySQL: " . $mysqli->connect_error);
@@ -40,7 +40,7 @@ CREATE TABLE user_profiles (
     first_name VARCHAR(100),
     last_name VARCHAR(100),
     dob DATE,
-    gender ENUM('male', 'female') DEFAULT NULL,
+    gender ENUM('male', 'female', 'other') DEFAULT NULL,
     blood_type ENUM('A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-') DEFAULT NULL,
     last_updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
