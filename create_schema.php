@@ -238,7 +238,7 @@ $users = [
         'gender' => 'male',
         'blood_type' => 'A+',
         'role' => 'admin',
-        'telegram_id' => '878514898'
+        'telegram_id' => '1236071046'
     ],
     [
         'username' => 'chantria',
@@ -249,7 +249,7 @@ $users = [
         'gender' => 'female',
         'blood_type' => 'B+',
         'role' => 'staff',
-        'telegram_id' => '878514898'
+        'telegram_id' => '1236071046'
     ],
     [
         'username' => 'donor1',
@@ -260,7 +260,7 @@ $users = [
         'gender' => 'male',
         'blood_type' => 'O+',
         'role' => 'donor',
-        'telegram_id' => '878514898'
+        'telegram_id' => '1236071046'
     ],
     [
         'username' => 'donor2',
@@ -271,7 +271,7 @@ $users = [
         'gender' => 'female',
         'blood_type' => 'A-',
         'role' => 'donor',
-        'telegram_id' => '878514898'
+        'telegram_id' => '1236071046'
     ],
     [
         'username' => 'nbtcc',
