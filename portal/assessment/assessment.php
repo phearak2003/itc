@@ -115,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $mysqli->commit();
 
-        header('Location: assessment_result.php');
+        header('Location: dashboard.php?page=assessment_result');
         exit();
     } catch (Exception $e) {
         $mysqli->rollback();

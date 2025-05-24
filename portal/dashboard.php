@@ -109,7 +109,10 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     <a href="dashboard.php?page=assessment" class="nav-link <?php echo ($current_page == 'assessment') ? 'active' : ''; ?>">Assessment</a>
                 </li>
                 <li class="nav-item">
-                    <a href="dashboard.php?page=assessment_history" class="nav-link <?php echo ($current_page == 'assessment_history') ? 'active' : ''; ?>">History</a>
+                    <a href="dashboard.php?page=assessment_history" class="nav-link <?php echo ($current_page == 'assessment_history') ? 'active' : ''; ?>">Assessment History</a>
+                </li>
+                <li class="nav-item">
+                    <a href="dashboard.php?page=appointment_list" class="nav-link <?php echo ($current_page == 'appointment_list') ? 'active' : ''; ?>">Appointment</a>
                 </li>
             <?php elseif ($_SESSION['role'] == 'staff'): ?>
                 <!-- Staff Link -->
@@ -128,7 +131,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     <a href="dashboard.php?page=user_management" class="nav-link <?php echo ($current_page == 'user_management') ? 'active' : ''; ?>">User Management</a>
                 </li>
                 <li class="nav-item">
-                    <a href="dashboard.php?page=list_cate" class="nav-link <?php echo ($current_page == 'list_cate') ? 'active' : ''; ?>">Assessment Category</a>
+                    <a href="dashboard.php?page=list_cate" class="nav-link <?php echo ($current_page == 'list_cate') ? 'active' : ''; ?>">Question Category</a>
                 </li>
                 <li class="nav-item">
                     <a href="dashboard.php?page=list_hospital" class="nav-link <?php echo ($current_page == 'list_hospital') ? 'active' : ''; ?>">Hospital</a>
@@ -136,12 +139,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                 <li class="nav-item">
                     <a href="dashboard.php?page=list_question" class="nav-link <?php echo ($current_page == 'list_question') ? 'active' : ''; ?>">Question</a>
                 </li>
-                <!-- Test -->
+            <?php elseif ($_SESSION['role'] == 'hospital'): ?>
                 <li class="nav-item">
-                    <a href="dashboard.php?page=assessment" class="nav-link <?php echo ($current_page == 'assessment') ? 'active' : ''; ?>">Assessment</a>
-                </li>
-                <li class="nav-item">
-                    <a href="dashboard.php?page=appointment_list" class="nav-link <?php echo ($current_page == 'appointment_list') ? 'active' : ''; ?>">Appointment</a>
+                    <a href="dashboard.php?page=appointment_request" class="nav-link <?php echo ($current_page == 'appointment_request') ? 'active' : ''; ?>">Appointment Request</a>
                 </li>
             <?php endif; ?>
         </ul>
@@ -175,6 +175,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     case 'assessment_result':
                         include 'assessment/assessment_result.php';
                         break;
+                    case 'assessment_detail':
+                        include 'assessment/assessment_detail.php';
+                        break;
 
                     // Appointment Management
                     case 'appointment':
@@ -185,6 +188,9 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                         break;
                     case 'view_appointment':
                         include 'appointment/view.php';
+                        break;
+                    case 'appointment_request':
+                        include 'appointment/appointment_request.php';
                         break;
 
                     // Question Management

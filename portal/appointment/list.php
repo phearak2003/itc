@@ -15,7 +15,8 @@ $query = "
         da.created_at AS appointment_created, 
         da.updated_at AS appointment_updated, 
         hs.status AS current_status, 
-        h.name AS hospital_name
+        h.name AS hospital_name,
+        h.address AS hospital_address
     FROM 
         donation_appointments da
     LEFT JOIN 
@@ -35,38 +36,45 @@ $result = $stmt->get_result();
 
 ?>
 
-<div class="container my-5">
-    <h2>Your Donation Appointments</h2>
-    <?php if ($result->num_rows > 0): ?>
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Appointment Date</th>
-                    <th>Hospital</th>
-                    <th>Status</th>
-                    <th>Created At</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+<h2>Your Donation Appointments</h2>
+<?php if ($result->num_rows > 0): ?>
+    <div class="card shadow-sm">
+        <div class="card-header bg-secondary text-white">
+            <h5>Appointments History</h5>
+        </div>
+        <div class="card-body p-0">
+            <table class="table table-bordered table-striped table-hover align-middle">
+                <thead class="table-primary">
                     <tr>
-                        <td><?= $row['appointment_id'] ?></td>
-                        <td><?= $row['appointment_date'] ?></td>
-                        <td><?= $row['hospital_name'] ?></td>
-                        <td><?= $row['current_status'] ?></td>
-                        <td><?= $row['appointment_created'] ?></td>
-                        <td>
-                            <a href="?page=view_appointment&id=<?= $row['appointment_id'] ?>" class="btn btn-primary btn-sm" title="View">
-                                <i class="bi bi-eye"></i>
-                            </a>
-                        </td>
+                        <th>#</th>
+                        <th>Appointment Date</th>
+                        <th>Hospital</th>
+                        <th>Hospital Address</th>
+                        <th>Status</th>
+                        <th>Created At</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p>You have no donation appointments yet.</p>
-    <?php endif; ?>
-</div>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td><?= $row['appointment_id'] ?></td>
+                            <td><?= $row['appointment_date'] ?></td>
+                            <td><?= $row['hospital_name'] ?></td>
+                            <td><?= $row['hospital_address'] ?></td>
+                            <td><?= $row['current_status'] ?></td>
+                            <td><?= $row['appointment_created'] ?></td>
+                            <td>
+                                <a href="?page=view_appointment&id=<?= $row['appointment_id'] ?>" class="btn btn-primary btn-sm" title="View">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+<?php else: ?>
+    <p>You have no donation appointments yet.</p>
+<?php endif; ?>

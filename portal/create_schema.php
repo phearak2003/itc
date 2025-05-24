@@ -6,10 +6,10 @@ if ($mysqli->connect_errno) {
 }
 
 // Testing only
-$mysqli->query("DROP DATABASE IF EXISTS blood_donation");
+// $mysqli->query("DROP DATABASE IF EXISTS blood_donation");
 
 // Create database
-$mysqli->query("CREATE DATABASE blood_donation");
+$mysqli->query("CREATE DATABASE IF NOT EXISTS blood_donation");
 $mysqli->select_db("blood_donation");
 
 echo "✅ Database created successfully.<br>";
@@ -114,7 +114,9 @@ CREATE TABLE hospitals (
     address TEXT NOT NULL,
     city VARCHAR(100),
     country VARCHAR(100),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_id INT NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id),
 );
 
 CREATE TABLE donation_appointments (
@@ -135,6 +137,9 @@ CREATE TABLE donation_appointment_status_history (
     donation_appointment_id INT NOT NULL,
     status ENUM('Pending', 'Accepted', 'Completed', 'Rejected', 'Expired') DEFAULT 'Pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_by INT NOT NULL,
+    comment VARCHAR(100),
+    FOREIGN KEY (created_by) REFERENCES users(id),
     FOREIGN KEY (donation_appointment_id) REFERENCES donation_appointments(id)
 );
 ";

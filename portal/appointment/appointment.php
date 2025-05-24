@@ -45,7 +45,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->execute();
         $mysqli->commit();
 
-        echo "<div class='alert alert-success'>Appointment successfully created!</div>";
+        header("Location: dashboard.php?page=appointment_list");
+        exit();
     } else {
         echo "<div class='alert alert-danger'>Error: " . $stmt->error . "</div>";
     }
@@ -74,7 +75,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <input type="date" class="form-control" id="appointment_date" name="appointment_date" required min="<?= date('Y-m-d', strtotime('+1 day')) ?>">
         </div>
 
-        <button type="submit" class="btn btn-primary">Create Appointment</button>
+        <div class="row mt-4">
+            <div class="col d-flex justify-content-between">
+                <a class="btn btn-danger w-50 me-2" href="dashboard.php?page=appointment_list">Back</a>
+                <button type="submit" class="btn btn-primary w-50">Create Appointment</button>
+            </div>
+        </div>
     </form>
 </div>
 

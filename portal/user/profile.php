@@ -35,8 +35,6 @@ $stmt->fetch();
 $stmt->close();
 ?>
 
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 <div class="container">
     <div class="p-5 border rounded bg-white shadow-sm" style="margin: auto; max-width: 500px;">
         <div class="card-body text-center">
@@ -55,7 +53,7 @@ $stmt->close();
 
             <div class="row mt-4">
                 <div class="col d-flex justify-content-between">
-                    <a class="btn btn-primary w-50 me-2" href="dashboard.php?page=user_management">Back</a>
+                    <a class="btn btn-primary w-50 me-2" href="dashboard.php">Back</a>
                     <a class="btn btn-danger w-50 me-2" href="dashboard.php?page=user_profile_edit&id=<?= $_SESSION['user_id'] ?>">Edit Profile</a>
                 </div>
             </div>

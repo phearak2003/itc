@@ -9,10 +9,14 @@ if (!isset($_GET['id'])) {
 $appointment_id = (int) $_GET['id'];
 
 $stmt = $mysqli->prepare("
-    SELECT status, created_at 
-    FROM donation_appointment_status_history 
-    WHERE donation_appointment_id = ? 
-    ORDER BY created_at ASC
+    SELECT 
+        his.status, 
+        his.created_at, 
+        CONCAT(u.first_name, ' ', u.last_name) AS created_by
+    FROM donation_appointment_status_history his
+    JOIN user_profiles u ON his.created_by = u.user_id
+    WHERE his.donation_appointment_id = ?
+    ORDER BY his.created_at ASC
 ");
 $stmt->bind_param("i", $appointment_id);
 $stmt->execute();
@@ -34,11 +38,13 @@ $status_to_step = [
 ];
 
 $completed_steps = [];
+$created_by_steps = [];
 $reviewed_actual_status = null;
 
 foreach ($statuses as $row) {
     $step = $status_to_step[$row['status']];
     $completed_steps[$step] = $row['created_at'];
+    $created_by_steps[$step] = $row['created_by'];
 
     if ($step === 'Reviewed') {
         $reviewed_actual_status = $row['status'];
@@ -72,7 +78,7 @@ foreach ($statuses as $row) {
     }
 
     .step.active::before {
-        background-color:rgb(97, 71, 0);
+        background-color: rgb(97, 71, 0);
     }
 
     .step .icon {
@@ -128,7 +134,10 @@ foreach ($statuses as $row) {
             <div class="step <?= $is_active ? 'active' : '' ?>">
                 <div class="icon"><?= $icon ?></div>
                 <div class="label"><?= htmlspecialchars($display_label) ?></div>
-                <div class="date"><?= $is_active ? date('M d, Y H:i', strtotime($completed_steps[$step])) : '' ?></div>
+                <div class="date">
+                    <?= $is_active ? date('M d, Y H:i', strtotime($completed_steps[$step])) : '' ?>
+                    <?= $is_active ? ' by ' . htmlspecialchars($created_by_steps[$step]) : '' ?>
+                </div>
             </div>
         <?php endforeach; ?>
     </div>
