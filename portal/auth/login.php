@@ -12,8 +12,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
 
     $stmt = $mysqli->prepare("
-        SELECT u.id, u.password, u.active, r.name AS role_name, u.force_reset
+        SELECT u.id, u.password, u.active, r.name AS role_name, u.force_reset, 
+               CONCAT(p.first_name, ' ', p.last_name) as full_name
         FROM users u
+        JOIN user_profiles p ON p.user_id = u.id
         JOIN roles r ON u.role_id = r.id
         WHERE u.username = ? and u.password is not null
     ");
@@ -22,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $stmt->store_result();
 
     if ($stmt->num_rows === 1) {
-        $stmt->bind_result($user_id, $hashed_password, $active, $role_name, $force_reset);
+        $stmt->bind_result($user_id, $hashed_password, $active, $role_name, $force_reset, $full_name);
         $stmt->fetch();
 
         $attempt_stmt = $mysqli->prepare("SELECT failed_attempts, last_failed_at FROM login_attempts WHERE user_id = ?");
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $_SESSION['user_id'] = $user_id;
                 $_SESSION['username'] = $username;
                 $_SESSION['role'] = $role_name;
+                $_SESSION['full_name'] = $full_name;
 
                 header("Location: ../dashboard.php");
                 exit;

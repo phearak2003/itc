@@ -135,7 +135,7 @@ CREATE TABLE donation_appointments (
 CREATE TABLE donation_appointment_status_history (
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     donation_appointment_id INT UNSIGNED NOT NULL,
-    status ENUM('Pending', 'Accepted', 'Completed', 'Rejected', 'Expired') DEFAULT 'Pending',
+    status ENUM('Pending', 'Accepted', 'Completed', 'Rejected', 'Expired', 'Cancelled') DEFAULT 'Pending',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     created_by INT UNSIGNED NOT NULL,
     comment VARCHAR(100),

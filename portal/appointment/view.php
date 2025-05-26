@@ -10,6 +10,7 @@ $appointment_id = (int) $_GET['id'];
 
 $stmt = $mysqli->prepare("
     SELECT 
+        his.comment, 
         his.status, 
         his.created_at, 
         CONCAT(u.first_name, ' ', u.last_name) AS created_by
@@ -34,6 +35,7 @@ $status_to_step = [
     'Accepted' => 'Reviewed',
     'Rejected' => 'Reviewed',
     'Expired' => 'Reviewed',
+    'Cancelled' => 'Reviewed',
     'Completed' => 'Completed',
 ];
 
@@ -45,6 +47,7 @@ foreach ($statuses as $row) {
     $step = $status_to_step[$row['status']];
     $completed_steps[$step] = $row['created_at'];
     $created_by_steps[$step] = $row['created_by'];
+    $comment_steps[$step] = $row['comment'];
 
     if ($step === 'Reviewed') {
         $reviewed_actual_status = $row['status'];
@@ -62,7 +65,7 @@ foreach ($statuses as $row) {
 
     .step {
         position: relative;
-        padding: 10px 0 10px 30px;
+        padding: 10px 0 20px 30px;
     }
 
     .step::before {
@@ -126,6 +129,8 @@ foreach ($statuses as $row) {
                     $icon = '❌';
                 } elseif ($reviewed_actual_status == 'Expired') {
                     $icon = '⏰';
+                } elseif ($reviewed_actual_status == 'Cancelled') {
+                    $icon = '🚫';
                 }
             } elseif ($step == 'Completed') {
                 $icon = '🩸';
@@ -138,9 +143,16 @@ foreach ($statuses as $row) {
                     <?= $is_active ? date('M d, Y H:i', strtotime($completed_steps[$step])) : '' ?>
                     <?= $is_active ? ' by ' . htmlspecialchars($created_by_steps[$step]) : '' ?>
                 </div>
+                <?php if ($is_active && !empty($comment_steps[$step])): ?>
+                    <div class="text-muted" style="font-size: 14px;">
+                        💬 <?= htmlspecialchars($comment_steps[$step]) ?>
+                    </div>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     </div>
 
-    <a href="dashboard.php?page=appointment_list" class="btn btn-secondary mt-4">Back to List</a>
+    <a href="<?= ($_SESSION['role'] ?? '') === 'donor' ? 'dashboard.php?page=appointment_list' : 'dashboard.php?page=appointment_request' ?>" class="btn btn-secondary mt-4">
+        Back to List
+    </a>
 </div>

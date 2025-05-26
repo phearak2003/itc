@@ -84,6 +84,7 @@ INSERT INTO `assessments` (`id`, `user_id`, `is_pass`, `is_book_appointment`, `c
 -- Exporting table: donation_appointment_status_history
 INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('1', '1', 'Pending', '2025-05-24 21:19:51', '3', NULL);
 INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('2', '1', 'Accepted', '2025-05-24 22:14:27', '5', 'ok');
+INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('5', '1', 'Cancelled', '2025-05-26 21:25:49', '3', 'Cancelled by First Donor');
 
 -- Exporting table: donation_appointments
 INSERT INTO `donation_appointments` (`id`, `user_id`, `hospital_id`, `assessment_id`, `appointment_date`, `created_at`, `updated_at`) VALUES ('1', '3', '1', '1', '2025-05-25', '2025-05-24 21:19:51', '2025-05-24 21:19:51');
@@ -115,7 +116,7 @@ INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) 
 INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('2', '2', '878514898', '2025-05-21 20:48:16');
 INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('3', '3', '878514898', '2025-05-21 20:48:17');
 INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('4', '4', '878514898', '2025-05-21 20:48:17');
-INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('5', '5', '1236071046', '2025-05-21 20:48:17');
+INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('5', '5', '878514898', '2025-05-21 20:48:17');
 
 -- Exporting table: user_profiles
 INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('1', '1', 'System', 'Admin', '2000-01-01', 'male', 'A+', '2025-05-21 20:48:16');

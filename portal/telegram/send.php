@@ -1,4 +1,12 @@
 <?php
+function escapeMarkdownV2($text) {
+    $escape_chars = ['_', '*', '[', ']', '(', ')', '~', '`', '>', '#', '+', '-', '=', '|', '{', '}', '.', '!'];
+    foreach ($escape_chars as $char) {
+        $text = str_replace($char, '\\' . $char, $text);
+    }
+    return $text;
+}
+
 function sendTelegramMessage($chat_id, $text)
 {
     try {
@@ -7,7 +15,8 @@ function sendTelegramMessage($chat_id, $text)
 
         $data = [
             'chat_id' => $chat_id,
-            'text' => $text
+            'text' => $text,
+            'parse_mode' => 'MarkdownV2'
         ];
 
         $options = [
