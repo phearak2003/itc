@@ -15,9 +15,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $address = $_POST['address'];
         $city = $_POST['city'];
         $country = $_POST['country'];
+        $user_id = $_POST['user_id'];
 
-        $query = "INSERT INTO hospitals (name, contact_number, telegram_chat_id, address, city, country) 
-                  VALUES ('$name', '$contact_number', '$telegram_chat_id', '$address', '$city', '$country')";
+        $query = "INSERT INTO hospitals (name, contact_number, telegram_chat_id, address, city, country, user_id) 
+                  VALUES ('$name', '$contact_number', '$telegram_chat_id', '$address', '$city', '$country', $user_id)";
         $mysqli->query($query);
     }
 
@@ -30,8 +31,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $address = $_POST['address'];
         $city = $_POST['city'];
         $country = $_POST['country'];
+        $user_id = $_POST['user_id'];
 
-        $query = "UPDATE hospitals SET name='$name', contact_number='$contact_number', telegram_chat_id='$telegram_chat_id', address='$address', city='$city', country='$country' WHERE id='$id'";
+        $query = "UPDATE hospitals SET name='$name', contact_number='$contact_number', telegram_chat_id='$telegram_chat_id', address='$address', city='$city', country='$country', user_id=$user_id WHERE id='$id'";
         $mysqli->query($query);
     }
 
@@ -42,6 +44,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $mysqli->query($query);
     }
 }
+
+$users = $mysqli->query("
+    SELECT u.id, CONCAT(p.first_name, p.last_name) AS name 
+    FROM users u
+    JOIN roles r ON r.id = u.role_id
+    JOIN user_profiles p ON p.user_id = u.id
+    WHERE r.name = 'hospital' AND active = 1
+");
 ?>
 
 <h2 class="text-center">Hospital Management</h2>
@@ -124,6 +134,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     <div class="mb-3">
                         <label for="telegram_chat_id" class="form-label">Telegram Chat ID</label>
                         <input type="text" name="telegram_chat_id" id="telegram_chat_id" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="user_id" class="form-label">User</label>
+                        <select name="user_id" id="user_id" class="form-select" required>
+                            <option value="">Select</option>
+                            <?php while ($user = $users->fetch_assoc()): ?>
+                                <option value="<?= htmlspecialchars($user['id']) ?>">
+                                    <?= htmlspecialchars(ucfirst($user['name'])) ?>
+                                </option>
+                            <?php endwhile; ?>
+                        </select>
                     </div>
                     <div class="mb-3">
                         <label for="address" class="form-label">Address</label>
@@ -211,7 +232,7 @@ while ($row = $result->fetch_assoc()) {
                             <label for="country" class="form-label">Country</label>
                             <select class="form-select" id="country" name="country" required>
                                 <option value="">Select</option>
-                                <option value="kh">Cambodia</option>
+                                <option value="kh" selected>Cambodia</option>
                             </select>
                         </div>
                         <button type="submit" name="update_hospital" class="btn btn-primary">Update Hospital</button>
