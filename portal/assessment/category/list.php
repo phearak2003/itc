@@ -1,9 +1,4 @@
 <?php
-if ($_SESSION['role'] !== 'admin') {
-    header("Location: dashboard.php?page=no_permission");
-    exit;
-}
-
 require_once 'connection.php';
 
 $message = '';

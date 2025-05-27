@@ -1,9 +1,4 @@
 <?php
-if (!isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php?page=no_permission");
-    exit;
-}
-
 include 'connection.php';
 
 $user_id = (int)$_SESSION['user_id'];

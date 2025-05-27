@@ -105,6 +105,22 @@ foreach ($statuses as $row) {
         font-size: 13px;
         color: gray;
     }
+
+    .step.inactive {
+        opacity: 0.5;
+    }
+
+    .step.inactive .icon {
+        color: #ced4da;
+    }
+
+    .step.inactive .label {
+        color: #6c757d;
+    }
+
+    .step.inactive .date {
+        color: #adb5bd;
+    }
 </style>
 
 <div class="container my-5">
@@ -136,7 +152,7 @@ foreach ($statuses as $row) {
                 $icon = '🩸';
             }
         ?>
-            <div class="step <?= $is_active ? 'active' : '' ?>">
+            <div class="step <?= $is_active ? 'active' : 'inactive' ?>">
                 <div class="icon"><?= $icon ?></div>
                 <div class="label"><?= htmlspecialchars($display_label) ?></div>
                 <div class="date">
@@ -152,7 +168,12 @@ foreach ($statuses as $row) {
         <?php endforeach; ?>
     </div>
 
-    <a href="<?= ($_SESSION['role'] ?? '') === 'donor' ? 'dashboard.php?page=appointment_list' : 'dashboard.php?page=appointment_request' ?>" class="btn btn-secondary mt-4">
+    <a href="<?php
+                echo ($_SESSION['role'] ?? '') === 'donor' ? 'dashboard.php?page=appointment_list'
+                    : (($_SESSION['role'] ?? '') === 'hospital' ? 'dashboard.php?page=appointment_request'
+                        : (($_SESSION['role'] ?? '') === 'staff' ? 'dashboard.php?page=assessment_list'
+                            : 'dashboard.php'));
+                ?>" class="btn btn-secondary mt-4">
         Back to List
     </a>
 </div>

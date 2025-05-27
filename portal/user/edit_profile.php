@@ -1,8 +1,4 @@
 <?php
-if (!isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php?page=no_permission");
-    exit;
-}
 include 'connection.php';
 include __DIR__ . '/../telegram/send.php';
 
@@ -72,10 +68,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $upload_dir = __DIR__ . '/../uploads/profiles/';
             if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
             move_uploaded_file($img_tmp, $upload_dir . $new_name);
-            $image_url = $upload_dir . $new_name;
+            $image_url = "uploads/profiles/" . $new_name;
         } else {
             $error = "Invalid image file type.";
         }
+    } else {
+        $image_url = $_POST['old_image_url'] ?? '';
     }
 
     if (empty($error)) {
@@ -91,11 +89,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         } else {
             $image_url = "uploads/profiles/" . $new_name;
 
+            if ($image_url === 'uploads/profiles/') {
+                $image_url = $old_image_url;
+            }
+
             $update_stmt = $mysqli->prepare("UPDATE users SET role_id = ?, image_url = ? WHERE username = ?");
             $update_stmt->bind_param("iss", $role_id, $image_url, $username);
 
-            if ($old_image_url && $old_image_url !== 'uploads/assets/default-user.png' && file_exists($old_image_url)) {
-                unlink($old_image_url);
+            $old_image_path = __DIR__ . '/../' . $old_image_url;
+            if ($old_image_url && $old_image_url !== 'uploads/assets/default-user.png' && file_exists($old_image_path)) {
+                unlink($old_image_path);
             }
 
             if ($update_stmt->execute()) {
@@ -137,7 +140,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
 
         <div class="row mb-3">
             <div class="col-12 text-center">
-                <img id="preview" src="<?= $image_url ? $image_url : 'uploads/assets/default-user.png' ?>" alt="Image Preview" class="img-thumbnail rounded-circle mb-2" style="width: 150px; height: 150px; object-fit: cover;">
+                <img id="preview" src="<?= htmlspecialchars($image_url ?: 'uploads/assets/default-user.png') ?>" alt="Image Preview" class="img-thumbnail rounded-circle mb-2" style="width: 150px; height: 150px; object-fit: cover;">
             </div>
         </div>
 
@@ -145,6 +148,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
             <div class="col-md-6">
                 <label for="image" class="form-label">Profile Image</label>
                 <input type="file" class="form-control" id="image" name="image" accept="image/*" onchange="previewImage(event)">
+                <input type="hidden" name="old_image_url" value="<?= htmlspecialchars($image_url) ?>">
             </div>
 
             <div class="col-md-6">
@@ -160,7 +164,7 @@ $roles = $mysqli->query("SELECT * FROM roles");
             </div>
             <div class="col-md-6">
                 <label for="last_name" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($last_name) ?>" required>
+                <input type="text" class="form-control" id="last_name" name="last_name" value="<?= htmlspecialchars($last_name) ?>">
             </div>
         </div>
 
@@ -249,21 +253,15 @@ $roles = $mysqli->query("SELECT * FROM roles");
     }
 
     function previewImage(event) {
-        const reader = new FileReader();
-        const output = document.getElementById('preview');
-        const file = event.target.files[0];
-
-        if (!file) {
-            output.src = 'uploads/assets/default-user.png';
-            return;
+        const input = event.target;
+        const preview = document.getElementById('preview');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
         }
-
-        reader.onload = function() {
-            output.src = reader.result;
-        };
-        reader.readAsDataURL(file);
-
-        updateFilename();
     }
 
     function updateFilename() {

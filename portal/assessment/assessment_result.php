@@ -4,11 +4,6 @@ require_once 'connection.php';
 
 $userId = $_SESSION['user_id'] ?? null;
 
-if (!$userId) {
-    header('Location: login.php');
-    exit;
-}
-
 // 
 $stmtCheck = $mysqli->prepare("
     SELECT * FROM assessments 

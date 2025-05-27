@@ -2,11 +2,6 @@
 require_once 'connection.php';
 include __DIR__ . '/../telegram/send.php';
 
-if (!isset($_SESSION['user_id'])) {
-    echo "You are not logged in.";
-    exit();
-}
-
 $user_id = $_SESSION['user_id'];
 
 $query = "
@@ -77,6 +72,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['cancel_appointment_id
         $stmt->bind_param("isi", $appointment_id, $comment, $user_id);
         $stmt->execute();
 
+        $chatStmt = $mysqli->prepare(
+            "
+                select u.telegram_chat_id
+                from donation_appointment_status_history h
+                JOIN donation_appointments d ON h.donation_appointment_id = d.id
+                JOIN user_contacts u ON u.user_id = d.user_id
+                WHERE d.id = ?
+                ORDER BY h.created_at ASC LIMIT 1"
+        );
+        $chatStmt->bind_param("i", $appointment_id);
+        $chatStmt->execute();
+        $chatResult = $chatStmt->get_result();
+        $chatRow = $chatResult->fetch_assoc();
+        $telegram_chat_id = $chatRow['telegram_chat_id'] ?? null;
+        $chatStmt->close();
+
+        $statusLine = 'Cancelled 🛑';
+        $appointmentIdEscaped = escapeMarkdownV2($appointment_id);
+        $statusLineEscaped = escapeMarkdownV2($statusLine);
+        $commentEscaped = escapeMarkdownV2($comment);
+        $updatedByEscaped = escapeMarkdownV2($full_name);
+
+        $text = escapeMarkdownV2("--------------------------------------------------------------")
+            . "\n🩸 *Donation Appointment Update* 🩸\n"
+            . escapeMarkdownV2("--------------------------------------------------------------")
+            . "\n🪪 *Appointment ID:* {$appointmentIdEscaped}\n"
+            . "📈 *Status:* {$statusLineEscaped}\n"
+            . "💬 *Comment:* {$commentEscaped} (You)\n"
+            . "👤 *Updated by:* {$updatedByEscaped} (You)";
+
+        sendTelegramMessage($telegram_chat_id, $text, 'MarkdownV2');
         $_SESSION['message'] = "Appointment cancelled successfully.";
     } else {
         $_SESSION['message'] = "Unable to cancel the appointment.";

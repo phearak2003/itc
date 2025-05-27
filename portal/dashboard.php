@@ -8,6 +8,43 @@ if (!isset($_SESSION['user_id'])) {
     exit;
 }
 
+$page = $_GET['page'] ?? 'dashboard';
+
+switch ($page) {
+    case 'user_management':
+    case 'list_cate':
+    case 'list_hospital':
+    case 'list_question':
+        if ($_SESSION['role'] !== 'admin') {
+            header("Location: dashboard.php?page=no_permission");
+            exit;
+        }
+        break;
+
+    case 'donor_list':
+        if ($_SESSION['role'] !== 'staff') {
+            header("Location: dashboard.php?page=no_permission");
+            exit;
+        }
+        break;
+
+    case 'assessment':
+    case 'assessment_history':
+    case 'appointment_list':
+        if ($_SESSION['role'] !== 'donor') {
+            header("Location: dashboard.php?page=no_permission");
+            exit;
+        }
+        break;
+
+    case 'appointment_request':
+        if ($_SESSION['role'] !== 'hospital') {
+            header("Location: dashboard.php?page=no_permission");
+            exit;
+        }
+        break;
+}
+
 $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
 ?>
 <!DOCTYPE html>
@@ -120,7 +157,7 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     <a href="dashboard.php?page=dashboard" class="nav-link <?php echo ($current_page == 'dashboard') ? 'active' : ''; ?>">Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a href="dashboard.php?page=donor_list" class="nav-link <?php echo ($current_page == 'donor_list') ? 'active' : ''; ?>">Donor List</a>
+                    <a href="dashboard.php?page=assessment_list" class="nav-link <?php echo ($current_page == 'assessment_list') ? 'active' : ''; ?>">Donor List</a>
                 </li>
             <?php elseif ($_SESSION['role'] == 'admin'): ?>
                 <!-- Admin Links -->
@@ -229,6 +266,11 @@ $current_page = isset($_GET['page']) ? $_GET['page'] : 'dashboard';
                     // Hospital Management
                     case 'list_hospital':
                         include 'hospital/list.php';
+                        break;
+
+                    // Hospital Management
+                    case 'donor_list':
+                        include 'donor/list.php';
                         break;
 
                     // Authorize Management

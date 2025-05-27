@@ -2,12 +2,6 @@
 require_once 'connection.php';
 include __DIR__ . '/../telegram/send.php';
 
-// Check if user is logged in
-if (!isset($_SESSION['user_id'])) {
-    echo "<div class='alert alert-danger'>User not logged in.</div>";
-    exit;
-}
-
 $user_id = (int)$_SESSION['user_id'];
 
 $stmtHospital = $mysqli->prepare("

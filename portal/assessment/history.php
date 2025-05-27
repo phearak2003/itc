@@ -1,11 +1,6 @@
 <?php
 require 'connection.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: auth/login.php");
-    exit;
-}
-
 $userId = $_SESSION['user_id'];
 
 $stmt = $mysqli->prepare("

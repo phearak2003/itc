@@ -58,9 +58,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             }
         } else {
             $failed_attempts++;
-            $update_stmt = $mysqli->prepare("UPDATE login_attempts SET failed_attempts = ?, last_failed_at = NOW() WHERE user_id = ?");
-            $update_stmt->bind_param("ii", $failed_attempts, $user_id);
-            $update_stmt->execute();
+            $insert_stmt = $mysqli->prepare("
+                INSERT INTO login_attempts (user_id, failed_attempts, last_failed_at)
+                VALUES (?, ?, NOW())
+                ON DUPLICATE KEY UPDATE
+                    failed_attempts = VALUES(failed_attempts),
+                    last_failed_at = NOW()
+            ");
+            $insert_stmt->bind_param("ii", $user_id, $failed_attempts);
+            $insert_stmt->execute();
 
             if ($failed_attempts >= 3) {
                 $error = "Your account is now locked after 3 failed login attempts.";

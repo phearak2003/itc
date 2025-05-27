@@ -2,11 +2,6 @@
 ob_start();
 require_once 'connection.php';
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
-}
-
 $user_id = $_SESSION['user_id'];
 
 $stmt = $mysqli->prepare("SELECT id FROM assessments WHERE user_id = ? ORDER BY create_date DESC LIMIT 1");

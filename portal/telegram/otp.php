@@ -34,10 +34,11 @@ function sendOtp($username)
                     $delete_otp->close();
 
                     $otp = rand(100000, 999999);
+                    $hashedOtp = password_hash($otp, PASSWORD_DEFAULT);
                     $expiry = date('Y-m-d H:i:s', strtotime('+5 minutes'));
 
                     $reset_stmt = $mysqli->prepare("INSERT INTO password_resets (user_id, otp_code, otp_expiry) VALUES (?, ?, ?)");
-                    $reset_stmt->bind_param("iss", $user_id, $otp, $expiry);
+                    $reset_stmt->bind_param("iss", $user_id, $hashedOtp, $expiry);
                     $reset_stmt->execute();
                     $reset_stmt->close();
 

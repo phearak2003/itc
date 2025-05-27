@@ -84,7 +84,6 @@ INSERT INTO `assessments` (`id`, `user_id`, `is_pass`, `is_book_appointment`, `c
 -- Exporting table: donation_appointment_status_history
 INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('1', '1', 'Pending', '2025-05-24 21:19:51', '3', NULL);
 INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('2', '1', 'Accepted', '2025-05-24 22:14:27', '5', 'ok');
-INSERT INTO `donation_appointment_status_history` (`id`, `donation_appointment_id`, `status`, `created_at`, `created_by`, `comment`) VALUES ('5', '1', 'Cancelled', '2025-05-26 21:25:49', '3', 'Cancelled by First Donor');
 
 -- Exporting table: donation_appointments
 INSERT INTO `donation_appointments` (`id`, `user_id`, `hospital_id`, `assessment_id`, `appointment_date`, `created_at`, `updated_at`) VALUES ('1', '3', '1', '1', '2025-05-25', '2025-05-24 21:19:51', '2025-05-24 21:19:51');
@@ -93,8 +92,11 @@ INSERT INTO `donation_appointments` (`id`, `user_id`, `hospital_id`, `assessment
 INSERT INTO `hospitals` (`id`, `name`, `contact_number`, `telegram_chat_id`, `address`, `city`, `country`, `created_at`, `user_id`) VALUES ('1', 'National Blood Transfusion Center Cambodia', '0961234567', '1236071046', 'GWV3+HR7, Yothapol Khemarak Phoumin Blvd (271), Phnom Penh', 'Phnom Penh', 'kh', '2025-05-21 21:24:47', '5');
 
 -- Exporting table: login_attempts
+INSERT INTO `login_attempts` (`id`, `user_id`, `failed_attempts`, `last_failed_at`) VALUES ('1', '1', '1', '2025-05-27 20:41:01');
+INSERT INTO `login_attempts` (`id`, `user_id`, `failed_attempts`, `last_failed_at`) VALUES ('2', '4', '1', '2025-05-27 20:41:38');
 
 -- Exporting table: password_resets
+INSERT INTO `password_resets` (`id`, `user_id`, `otp_code`, `otp_expiry`, `created_at`) VALUES ('2', '1', '$2y$10$769', '2025-05-27 15:48:11', '2025-05-27 20:43:11');
 
 -- Exporting table: question_categories
 INSERT INTO `question_categories` (`id`, `name`, `description`) VALUES ('1', 'General Health', 'Basic health check before donation');
@@ -119,14 +121,14 @@ INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) 
 INSERT INTO `user_contacts` (`id`, `user_id`, `telegram_chat_id`, `created_at`) VALUES ('5', '5', '878514898', '2025-05-21 20:48:17');
 
 -- Exporting table: user_profiles
-INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('1', '1', 'System', 'Admin', '2000-01-01', 'male', 'A+', '2025-05-21 20:48:16');
+INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('1', '1', 'System', 'Admin', '2000-01-01', 'male', 'A+', '2025-05-27 19:30:20');
 INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('2', '2', 'Chum', 'Ratanakchentria', '2000-01-01', 'female', 'B+', '2025-05-21 20:48:16');
 INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('3', '3', 'First', 'Donor', '1998-05-10', 'male', 'O+', '2025-05-21 20:48:17');
 INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('4', '4', 'Second', 'Donor', '1999-07-12', 'female', 'A-', '2025-05-21 20:48:17');
 INSERT INTO `user_profiles` (`id`, `user_id`, `first_name`, `last_name`, `dob`, `gender`, `blood_type`, `last_updated`) VALUES ('5', '5', 'National Blood Transfusion Center Cambodia', '', '1990-01-01', '', 'AB+', '2025-05-21 20:48:17');
 
 -- Exporting table: users
-INSERT INTO `users` (`id`, `username`, `password`, `image_url`, `active`, `force_reset`, `role_id`, `created_at`, `updated_at`) VALUES ('1', 'admin', '$2y$10$iT4B4tnxbyvURmdP7FF3iO/6bnPC6mvs7065uP.LqtyI4SpqqB4/O', 'uploads/assets/default-user.png', '1', '0', '1', '2025-05-21 20:48:16', '2025-05-21 20:48:16');
+INSERT INTO `users` (`id`, `username`, `password`, `image_url`, `active`, `force_reset`, `role_id`, `created_at`, `updated_at`) VALUES ('1', 'admin', '$2y$10$iT4B4tnxbyvURmdP7FF3iO/6bnPC6mvs7065uP.LqtyI4SpqqB4/O', 'uploads/profiles/profile_6835b863b05440.06979282.jpg', '1', '0', '1', '2025-05-21 20:48:16', '2025-05-27 20:04:35');
 INSERT INTO `users` (`id`, `username`, `password`, `image_url`, `active`, `force_reset`, `role_id`, `created_at`, `updated_at`) VALUES ('2', 'chantria', '$2y$10$nn60wDJ2.5DsNzKB2qGVJuKYNixNmikHh1KXYbpMP4CZ7x7IbgiU2', 'uploads/assets/default-user.png', '1', '0', '2', '2025-05-21 20:48:16', '2025-05-21 20:48:16');
 INSERT INTO `users` (`id`, `username`, `password`, `image_url`, `active`, `force_reset`, `role_id`, `created_at`, `updated_at`) VALUES ('3', 'donor1', '$2y$10$rHYUvghVLGm0yEgbk9Fir.LzLIRHFOKNDgHS/yCWe0eaNnjR0p756', 'uploads/assets/default-user.png', '1', '0', '3', '2025-05-21 20:48:17', '2025-05-21 20:48:17');
 INSERT INTO `users` (`id`, `username`, `password`, `image_url`, `active`, `force_reset`, `role_id`, `created_at`, `updated_at`) VALUES ('4', 'donor2', '$2y$10$D7yb78b2ltNRHHvtQALdDeJ2uOodp9l.VnLBFvBx.n/oP1QSqvP7C', 'uploads/assets/default-user.png', '1', '0', '3', '2025-05-21 20:48:17', '2025-05-21 20:48:17');

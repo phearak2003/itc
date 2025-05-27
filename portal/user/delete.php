@@ -1,11 +1,6 @@
 <?php
 require 'connection.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
-    header("Location: dashboard.php?page=no_permission");
-    exit;
-}
-
 if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
     header("Location: dashboard.php?page=user_management&error=Invalid user ID.");
     exit;

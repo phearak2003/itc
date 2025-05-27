@@ -2,13 +2,7 @@
 ob_start();
 require 'connection.php';
 
-// 
 $userId = (int)$_SESSION['user_id'];
-
-if (!$userId) {
-    header('Location: login.php');
-    exit();
-}
 
 // Step 1: Fetch latest assessment for the user
 $stmtCheck = $mysqli->prepare("
@@ -28,18 +22,18 @@ if ($rowStmtCheck = $resultStmtCheck->fetch_assoc()) {
         $createDate = new DateTime($rowStmtCheck['create_date']);
         $threeMonthsAgo = (new DateTime())->modify('-3 months');
 
-        if ($createDate < $threeMonthsAgo) {
+        if ($createDate > $threeMonthsAgo) {
             // Step 4: Check if not yet booked
             if ($rowStmtCheck['is_book_appointment'] == 0) {
-                // echo "Assessment is passed, expired, and not booked yet.";
+                // echo "Assessment is passed, not expired, and not booked yet.";
                 header('Location: dashboard.php?page=assessment_result');
                 exit;
             } else {
                 // echo "Assessment is passed and expired, but already booked.";
             }
         } else {
-            // echo "Assessment is passed and still valid.";
-            header('Location: dashboard.php?page=assessment_result');
+            // echo "Assessment is passed but expired.";
+            // header('Location: dashboard.php?page=assessment_result');
             exit;
         }
     } else {

@@ -24,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt->bind_result($db_otp, $otp_expiry);
         $stmt->fetch();
         $stmt->close();
-
-        if ($otp === $db_otp && strtotime($otp_expiry) >= time()) {
+        
+        if (password_verify($otp, $db_otp) && strtotime($otp_expiry) >= time()) {
             $hashed = password_hash($new_pass, PASSWORD_DEFAULT);
 
             $force_reset = 0;
